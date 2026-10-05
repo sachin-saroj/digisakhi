@@ -1521,13 +1521,28 @@ function ModuleModal({
 
 function Hero({
   lang,
+  isAuthenticated,
   onLogin,
   topicCount,
 }: {
   lang: "en" | "hi";
+  isAuthenticated?: boolean;
   onLogin: () => void;
   topicCount: number;
 }) {
+  const handleStartLearning = () => {
+    if (isAuthenticated) {
+      const el = document.getElementById("learn");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.location.hash = "learn";
+      }
+    } else {
+      onLogin();
+    }
+  };
+
   return (
     <section className="overflow-hidden border-b border-[#ded8cc]">
       <div className="mx-auto grid max-w-[1320px] gap-12 px-5 pb-20 pt-14 lg:grid-cols-[1.1fr_.9fr] lg:px-10 lg:pb-28 lg:pt-24">
@@ -1547,7 +1562,7 @@ function Hero({
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Button
-              onClick={onLogin}
+              onClick={handleStartLearning}
               className="h-13 rounded-full bg-[#0F766E] px-7 text-sm font-bold hover:bg-[#0b625c]"
             >
               {lang === "en" ? "Start learning" : "सीखना शुरू करें"}{" "}
@@ -3652,6 +3667,7 @@ export default function Home() {
       <main>
         <Hero
           lang={lang}
+          isAuthenticated={auth.isAuthenticated}
           onLogin={() => setLogin(true)}
           topicCount={modules.length}
         />
@@ -3716,22 +3732,38 @@ export default function Home() {
               <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
                 <div>
                   <div className="eyebrow text-[#6d45c9]">
-                    a note from your sakhi
+                    {lang === "en"
+                      ? "a note from your sakhi"
+                      : "आपकी सखी का एक संदेश"}
                   </div>
                   <h2 className="font-display mt-4 max-w-xl text-5xl leading-[.9] tracking-[-.05em] text-[#241c42]">
-                    You do not need to be a technology expert to be digitally
-                    safe.
+                    {lang === "en"
+                      ? "You do not need to be a technology expert to be digitally safe."
+                      : "डिजिटल रूप से सुरक्षित रहने के लिए आपको तकनीक विशेषज्ञ होने की आवश्यकता नहीं है।"}
                   </h2>
                   <p className="mt-5 max-w-lg font-serif text-lg text-[#574f73]">
-                    You only need the confidence to pause, ask and choose what
-                    feels right.
+                    {lang === "en"
+                      ? "You only need the confidence to pause, ask and choose what feels right."
+                      : "आपको बस रुकने, पूछने और सही फैसला लेने के आत्मविश्वास की जरूरत है।"}
                   </p>
                 </div>
                 <Button
-                  onClick={() => setLogin(true)}
+                  onClick={() => {
+                    if (auth.isAuthenticated) {
+                      const el = document.getElementById("learn");
+                      if (el) {
+                        el.scrollIntoView({ behavior: "smooth" });
+                      } else {
+                        window.location.hash = "learn";
+                      }
+                    } else {
+                      setLogin(true);
+                    }
+                  }}
                   className="rounded-full bg-[#7c3aed] px-6 hover:bg-[#6930d3]"
                 >
-                  Begin your journey <ArrowRight size={16} />
+                  {lang === "en" ? "Begin your journey" : "अपनी यात्रा शुरू करें"}{" "}
+                  <ArrowRight size={16} />
                 </Button>
               </div>
             </div>
