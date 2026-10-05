@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #0f172a;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* TERMINAL CARD */
+    #terminal-screen {
+      width: 900px;
+      background: #18181b;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid #27272a;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .terminal-header {
+      background: #27272a;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .term-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #eab308; }
+    .dot-green { background: #22c55e; }
+    .term-title {
+      color: #a1a1aa;
+      font-size: 0.82rem;
+      margin-left: 12px;
+      font-family: 'Fira Code', monospace;
+    }
+    .term-body {
+      padding: 20px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.92rem;
+      color: #f4f4f5;
+      line-height: 1.6;
+    }
+    .term-prompt { color: #10b981; font-weight: 600; }
+    .term-cmd { color: #f43f5e; font-weight: 600; }
+    .term-cyan { color: #06b6d4; }
+    .term-green { color: #22c55e; }
+    .term-yellow { color: #eab308; }
+    .term-gray { color: #71717a; }
+
+    /* DRIZZLE STUDIO CARD */
+    #drizzle-screen {
+      width: 1000px;
+      background: #09090b;
+      border-radius: 14px;
+      border: 1px solid #27272a;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+      overflow: hidden;
+      margin-bottom: 40px;
+      font-family: 'Inter', sans-serif;
+    }
+    .studio-topbar {
+      background: #18181b;
+      padding: 12px 20px;
+      border-bottom: 1px solid #27272a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .studio-logo {
+      background: #eab308;
+      color: #000;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .studio-badge {
+      background: #064e3b;
+      color: #34d399;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      border: 1px solid #059669;
+    }
+    .studio-layout {
+      display: flex;
+      height: 440px;
+    }
+    .studio-sidebar {
+      width: 240px;
+      background: #111113;
+      border-right: 1px solid #27272a;
+      padding: 16px 12px;
+    }
+    .sidebar-section {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #71717a;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+      padding-left: 8px;
+    }
+    .table-item {
+      padding: 8px 10px;
+      border-radius: 6px;
+      color: #a1a1aa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      cursor: pointer;
+    }
+    .table-item.active {
+      background: #27272a;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .table-count {
+      background: #3f3f46;
+      color: #e4e4e7;
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+    .studio-main {
+      flex: 1;
+      background: #09090b;
+      padding: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .table-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .table-title {
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .refresh-btn {
+      background: #27272a;
+      color: #e4e4e7;
+      border: 1px solid #3f3f46;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-family: 'Fira Code', monospace;
+    }
+    .data-table th {
+      background: #18181b;
+      color: #a1a1aa;
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid #27272a;
+      font-weight: 500;
+    }
+    .data-table td {
+      padding: 12px;
+      color: #e4e4e7;
+      border-bottom: 1px solid #1c1c1f;
+    }
+    .data-table tr.highlight-new {
+      background: rgba(16, 185, 129, 0.12);
+      border-left: 3px solid #10b981;
+    }
+    .badge-status {
+      background: #0284c7;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    /* VS CODE EDITOR CARD */
+    #vscode-screen {
+      width: 900px;
+      background: #1e1e1e;
+      border-radius: 12px;
+      border: 1px solid #333;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+      margin-bottom: 40px;
+      font-family: 'Fira Code', monospace;
+    }
+    .vscode-tabs {
+      background: #252526;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .vscode-tab {
+      background: #1e1e1e;
+      color: #ffffff;
+      padding: 9px 18px;
+      font-size: 0.85rem;
+      border-top: 2px solid #007acc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vscode-tab.inactive {
+      background: #2d2d2d;
+      color: #969696;
+      border-top: 2px solid transparent;
+    }
+    .vscode-code {
+      padding: 20px;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: #d4d4d4;
+    }
+    .line-no { color: #858585; margin-right: 18px; user-select: none; }
+    .token-comment { color: #6a9955; font-style: italic; }
+    .token-key { color: #9cdcfe; }
+    .token-string { color: #ce9178; }
+    .token-url { color: #dcdcaa; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. TERMINAL SCREEN -->
+  <div id="terminal-screen">
+    <div class="terminal-header">
+      <div class="term-dot dot-red"></div>
+      <div class="term-dot dot-yellow"></div>
+      <div class="term-dot dot-green"></div>
+      <div class="term-title">PowerShell — c:\Users\Asus\OneDrive\Documents\DIGISAKHI</div>
+    </div>
+    <div class="term-body">
+      <div><span class="term-prompt">PS C:\Users\Asus\OneDrive\Documents\DIGISAKHI&gt;</span> <span class="term-cmd">pnpm drizzle-kit studio</span></div>
+      <div class="term-gray" style="margin-top: 10px;">[drizzle-kit] Starting Drizzle Studio...</div>
+      <div class="term-cyan">Drizzle Studio is up and running on <span class="term-yellow" style="text-decoration: underline;">https://local.drizzle.studio</span></div>
+      <div style="margin-top: 10px;"><span class="term-green">✓</span> <span class="term-gray">Connected to:</span> <span class="term-cyan">TiDB Serverless Cloud (MySQL 8.0)</span></div>
+      <div><span class="term-green">✓</span> <span class="term-gray">Host:</span> gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000</div>
+      <div><span class="term-green">✓</span> <span class="term-gray">SSL Security:</span> rejectUnauthorized=true (TLS Encrypted)</div>
+      <div style="margin-top: 10px; color: #a1a1aa;">Studio listening on local bridge port 4983. Ready for queries!</div>
+    </div>
+  </div>
+
+  <!-- 2. DRIZZLE STUDIO SCREEN -->
+  <div id="drizzle-screen">
+    <div class="studio-topbar">
+      <div class="studio-brand">
+        <span class="studio-logo">drizzle</span>
+        <span>Studio</span>
+        <span style="color: #71717a; font-weight: normal; margin-left: 8px;">/ digisakhi</span>
+      </div>
+      <div class="studio-badge">● Connected (AWS Tokyo TiDB)</div>
+    </div>
+    <div class="studio-layout">
+      <div class="studio-sidebar">
+        <div class="sidebar-section">SCHEMAS &amp; TABLES (8)</div>
+        <div class="table-item active">
+          <span>📋 incident_reports</span>
+          <span class="table-count">Live</span>
+        </div>
+        <div class="table-item">
+          <span>👥 users</span>
+          <span class="table-count">2</span>
+        </div>
+        <div class="table-item">
+          <span>📚 modules</span>
+          <span class="table-count">4</span>
+        </div>
+        <div class="table-item">
+          <span>📈 learning_progress</span>
+          <span class="table-count">3</span>
+        </div>
+        <div class="table-item">
+          <span>🎯 quiz_attempts</span>
+          <span class="table-count">5</span>
+        </div>
+        <div class="table-item">
+          <span>💬 forum_posts</span>
+          <span class="table-count">1</span>
+        </div>
+        <div class="table-item">
+          <span>↩️ forum_replies</span>
+          <span class="table-count">1</span>
+        </div>
+        <div class="table-item">
+          <span>📢 announcements</span>
+          <span class="table-count">1</span>
+        </div>
+      </div>
+      <div class="studio-main">
+        <div class="table-header-bar">
+          <div class="table-title">
+            <span>incident_reports</span>
+            <span style="font-size: 0.8rem; color: #10b981; font-weight: 500;">(Real-time Cloud Sync)</span>
+          </div>
+          <div class="refresh-btn">🔄 Refresh data</div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>category</th>
+              <th>description</th>
+              <th>anonymous</th>
+              <th>status</th>
+              <th>createdAt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight-new">
+              <td style="font-weight: 700; color: #10b981;">1</td>
+              <td>Fake UPI QR / Payment Request</td>
+              <td>Received fake 500 cashback QR on WhatsApp</td>
+              <td><span style="color: #34d399;">1 (True)</span></td>
+              <td><span class="badge-status">New</span></td>
+              <td style="color: #a1a1aa;">2026-10-05 20:45:12</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid #1c1c1f; font-size: 0.75rem; color: #71717a;">
+          Showing 1 of 1 row | Table: `incident_reports` on TiDB Serverless (AWS Tokyo)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. VS CODE .ENV SCREEN -->
+  <div id="vscode-screen">
+    <div class="vscode-tabs">
+      <div class="vscode-tab">⚙️ .env</div>
+      <div class="vscode-tab inactive">📄 drizzle/schema.ts</div>
+      <div class="vscode-tab inactive">📄 server/db.ts</div>
+    </div>
+    <div class="vscode-code">
+      <div><span class="line-no">1</span><span class="token-comment"># Database connection string (TiDB Serverless MySQL AWS Tokyo)</span></div>
+      <div><span class="line-no">2</span><span class="token-key">DATABASE_URL</span>=<span class="token-string">"mysql://3iybbhkz3wcgD4S.root:rs84mCJLPdqwMrz7@gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/test"</span></div>
+      <div><span class="line-no">3</span></div>
+      <div><span class="line-no">4</span><span class="token-comment"># Authentication &amp; Session Secrets</span></div>
+      <div><span class="line-no">5</span><span class="token-key">JWT_SECRET</span>=<span class="token-string">"digisakhi_jwt_secret_key_college_project_2026"</span></div>
+      <div><span class="line-no">6</span><span class="token-key">NODE_ENV</span>=<span class="token-string">"production"</span></div>
+      <div><span class="line-no">7</span><span class="token-key">PORT</span>=<span class="token-string">"3000"</span></div>
+    </div>
+  </div>
+
+</body>
+</html>

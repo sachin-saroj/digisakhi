@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+    body { margin: 0; padding: 12px; background: #0f172a; font-family: 'Inter', sans-serif; }
+    #vscode-screen {
+      width: 960px; background: #1e1e1e; border-radius: 12px;
+      border: 1px solid #333; box-shadow: 0 20px 40px rgba(0,0,0,0.6); overflow: hidden;
+      font-family: 'Fira Code', monospace;
+    }
+    .vscode-tabs { background: #252526; display: flex; align-items: center; border-bottom: 1px solid #1e1e1e; }
+    .vscode-tab {
+      background: #1e1e1e; color: #ffffff; padding: 9px 18px; font-size: 0.85rem;
+      border-top: 2px solid #007acc; display: flex; align-items: center; gap: 8px;
+    }
+    .vscode-tab.inactive { background: #2d2d2d; color: #969696; border-top: 2px solid transparent; }
+    .vscode-code { padding: 20px; font-size: 0.88rem; line-height: 1.7; color: #d4d4d4; }
+    .line-no { color: #858585; margin-right: 18px; user-select: none; }
+    .token-comment { color: #6a9955; font-style: italic; }
+    .token-key { color: #9cdcfe; font-weight: 500; }
+    .token-string { color: #ce9178; }
+    .highlight-line { background: rgba(0, 122, 204, 0.15); border-left: 3px solid #007acc; margin: 0 -20px; padding: 0 20px; }
+  </style>
+</head>
+<body>
+  <div id="vscode-screen">
+    <div class="vscode-tabs">
+      <div class="vscode-tab">⚙️ .env</div>
+      <div class="vscode-tab inactive">📄 drizzle/schema.ts</div>
+      <div class="vscode-tab inactive">📄 server/db.ts</div>
+      <div class="vscode-tab inactive">📄 server/routers/digisakhi.ts</div>
+    </div>
+    <div class="vscode-code">
+      <div><span class="line-no">1</span><span class="token-comment"># Database connection string (TiDB Serverless MySQL AWS Tokyo)</span></div>
+      <div class="highlight-line"><span class="line-no">2</span><span class="token-key">DATABASE_URL</span>=<span class="token-string">"mysql://3iybbhkz3wcgD4S.root:rs84mCJLPdqwMrz7@gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/test"</span></div>
+      <div><span class="line-no">3</span></div>
+      <div><span class="line-no">4</span><span class="token-comment"># Authentication &amp; Session Secrets</span></div>
+      <div><span class="line-no">5</span><span class="token-key">JWT_SECRET</span>=<span class="token-string">"digisakhi_jwt_secret_key_college_project_2026"</span></div>
+      <div><span class="line-no">6</span><span class="token-key">NODE_ENV</span>=<span class="token-string">"production"</span></div>
+      <div><span class="line-no">7</span><span class="token-key">PORT</span>=<span class="token-string">"3000"</span></div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+    body { margin: 0; padding: 12px; background: #0f172a; font-family: 'Inter', sans-serif; }
+    #terminal-screen {
+      width: 860px; background: #18181b; border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid #27272a; overflow: hidden;
+    }
+    .terminal-header { background: #27272a; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+    .term-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background: #ef4444; } .dot-yellow { background: #eab308; } .dot-green { background: #22c55e; }
+    .term-title { color: #a1a1aa; font-size: 0.82rem; margin-left: 12px; font-family: 'Fira Code', monospace; }
+    .term-body { padding: 20px; font-family: 'Fira Code', monospace; font-size: 0.92rem; color: #f4f4f5; line-height: 1.6; }
+    .term-prompt { color: #10b981; font-weight: 600; }
+    .term-cmd { color: #f43f5e; font-weight: 600; }
+    .term-cyan { color: #06b6d4; }
+    .term-green { color: #22c55e; }
+    .term-yellow { color: #eab308; }
+    .term-gray { color: #71717a; }
+  </style>
+</head>
+<body>
+  <div id="terminal-screen">
+    <div class="terminal-header">
+      <div class="term-dot dot-red"></div>
+      <div class="term-dot dot-yellow"></div>
+      <div class="term-dot dot-green"></div>
+      <div class="term-title">PowerShell — c:\Users\Asus\OneDrive\Documents\DIGISAKHI</div>
+    </div>
+    <div class="term-body">
+      <div><span class="term-prompt">PS C:\Users\Asus\OneDrive\Documents\DIGISAKHI&gt;</span> <span class="term-cmd">pnpm drizzle-kit studio</span></div>
+      <div class="term-gray" style="margin-top: 10px;">[drizzle-kit] Starting Drizzle Studio...</div>
+      <div class="term-cyan" style="margin-top: 4px;">Drizzle Studio is up and running on <span class="term-yellow" style="text-decoration: underline; font-weight: 600;">https://local.drizzle.studio</span></div>
+      <div style="margin-top: 10px;"><span class="term-green">✓</span> <span class="term-gray">Connected to:</span> <span class="term-cyan">TiDB Serverless Cloud (MySQL 8.0)</span></div>
+      <div><span class="term-green">✓</span> <span class="term-gray">Host:</span> gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000</div>
+      <div><span class="term-green">✓</span> <span class="term-gray">SSL Security:</span> rejectUnauthorized=true (TLS Encrypted)</div>
+      <div style="margin-top: 10px; color: #a1a1aa;">Studio listening on local bridge port 4983. Ready for visual queries!</div>
+    </div>
+  </div>
+</body>
+</html>
