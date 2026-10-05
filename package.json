@@ -2,7 +2,6 @@
   "name": "digisakhi",
   "version": "1.0.0",
   "type": "module",
-  "packageManager": "pnpm@10.4.1",
   "license": "MIT",
   "scripts": {
     "dev": "tsx watch server/_core/index.ts",
