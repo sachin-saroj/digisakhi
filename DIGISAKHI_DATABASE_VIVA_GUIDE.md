@@ -1,4 +1,4 @@
-# DigiSakhi (डिजी सखी) — Step-by-Step Live Database Viva Visual Playbook
+# DigiSakhi (डिजी सखी) — 5 Master Viva Questions (10 Saal Ke Bachhe Jaisi Simple Language)
 
 > **Live Production URL:** [https://digisakhi-32j7.onrender.com](https://digisakhi-32j7.onrender.com)  
 > **GitHub Repository:** [https://github.com/sachin-saroj/digisakhi](https://github.com/sachin-saroj/digisakhi)  
@@ -6,137 +6,130 @@
 
 ---
 
-## 🎯 Yeh Guide Kaise Use Karni Hai:
-Bhai, jab Ma'am samne baithe hon, toh bas **Step 1 se lekar Step 7** tak sequence mein chalte jao. Har step mein maine likh diya hai ki:
-1. **Kaunsi Window / App kholni hai**
-2. **Kya Type / Run karna hai**
-3. **Screen par kya output aayega (Screenshot)**
-4. **Ma'am ko kya bolna hai (Exact Spoken Dialogue)**
+## 🎯 5 Master Questions Jo Ma'am Puchegi:
 
 ---
 
-### 🟢 STEP 1: Terminal Kholo Aur Drizzle Studio Run Karo
+### ❓ QUESTION 1: "Database Kahan Hai?" (Where is the Database?)
 
-* **💻 Aapko Kya Karna Hai:**  
-  VS Code mein Terminal kholo (`Ctrl + ~`) aur yeh command run karo:
-  ```bash
-  pnpm drizzle-kit studio
-  ```
+#### 👶 10 Saal Ke Bachhe Jaisa Example:
+Jaise tumhare phone ki photos tumhare phone ke tootne par bhi delete nahi hoti kyunki wo **Google Drive / Cloud** par save rehti hain, bilkul waise hi hamara database laptop ke kisi folder me nahi hai. Hamara database **AWS (Amazon)** ke **Tokyo (Japan)** cloud data center mein **TiDB Cloud** par 24/7 chal raha hai!
 
-* **📸 Screen Par Yeh Output Dikhai Dega:**  
-  ![Step 1 Terminal](./images/step1_terminal.png)
-  *Terminal par green checkmark aayega: `TiDB Serverless (AWS Tokyo) connected & listening on port 4983`.*
+#### 📁 Code Mein Kahan Hai?
+VS Code mein `.env` file kholo aur Line 2 dikhao:
+```env
+DATABASE_URL="mysql://3iybbhkz3wcgD4S.root:***@gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/test"
+```
+👉 Yahan dekho: `gateway01.ap-northeast-1.prod.aws.tidbcloud.com` ka matlab hai **AWS Tokyo (ap-northeast-1)**. Port: `4000`.
 
-* **🗣️ Ma'am Ko Yeh Bolo:**  
-  > *"Ma'am, hum **Drizzle Studio** start kar rahe hain jo hamare local environment ko **AWS Tokyo** ke **TiDB Cloud MySQL** database ke sath TLS/SSL encrypted bridge ke through live connect karta hai."*
+#### 📸 Proof Screenshots:
+![TiDB Cloud Cluster Overview](./images/media_1791209274061.png)
+*TiDB Cloud: Cluster 'digisakhi' | Cloud: AWS | Region: Tokyo (ap-northeast-1) | Status: Active*
 
----
+![TiDB Cloud Parameters](./images/media_1791209468836.png)
+*TiDB Connect Popup: Host, Port 4000, Username matching Line 2 of .env.*
 
-### 🟢 STEP 2: Browser Mein Drizzle Studio Kholkar All 8 Tables Dikhao
-
-* **🌐 Aapko Kya Karna Hai:**  
-  Google Chrome browser kholo aur address bar mein yeh URL daalo:
-  ```text
-  https://local.drizzle.studio
-  ```
-
-* **📸 Screen Par Yeh Output Dikhai Dega:**  
-  ![Step 2 Drizzle Studio](./images/step2_drizzle_studio.png)
-  *Left sidebar mein saare 8 tables dikhte hain. Center mein live rows aur refresh button dikhta hai.*
-
-* **🗣️ Ma'am Ko Yeh Bolo:**  
-  > *"Dekhiye Ma'am, yeh hamare database ka visual interface hai. Left sidebar me hamare saare **8 tables** hain: `users`, `modules`, `incident_reports`, `learning_progress`, `quiz_attempts`, `forum_posts`, `forum_replies`, aur `announcements`."*
+#### 🗣️ Ma'am Ko Yeh Bolo (Word-to-Word):
+> *"Ma'am, hamara database local computer par nahi hai. Hamara database **Amazon Web Services (AWS)** ke **Tokyo region** mein **TiDB Cloud Serverless** par hosted hai. Humne cloud database isliye use kiya kyunki hamari website Render par globally live hai (`https://digisakhi-32j7.onrender.com`), taaki koi bhi Sakhi apne phone se report submit kare toh data instantly cloud database me save ho sake."*
 
 ---
 
-### 🟢 STEP 3: VS Code Mein .env Aur Connection String Dikhao
+### ❓ QUESTION 2: "File Mein Kahan Hai Code? Aur Data Save Kahan Ho Raha Hai?"
 
-* **📁 Aapko Kya Karna Hai:**  
-  VS Code file explorer mein `.env` file par click karo aur Line 2 dikhao.
+#### 👶 10 Saal Ke Bachhe Jaisa Example:
+Socho school mein ek **Register (Diary)** hoti hai:
+1. Diary ka layout/columns (Roll No, Name, Fees) kisne banaya? ➔ **`schema.ts`** ne!
+2. Diary mein pen se naam kisne likha (save kiya)? ➔ **`server/db.ts`** ne!
+3. Aur likhne ke baad diary kahan rakhi gayi? ➔ **TiDB Cloud ke AWS Tokyo locker** mein!
 
-* **📸 Screen Par Yeh Output Dikhai Dega:**  
-  ![Step 3 VS Code](./images/step3_vscode.png)
-  *Line 2 par `DATABASE_URL` AWS Tokyo TiDB Cloud Gateway ko point kar raha hai.*
+#### 📁 Code Ki 3 Files Aur Unki Exact Lines:
 
-* **🗣️ Ma'am Ko Yeh Bolo:**  
-  > *"Ma'am, Line 2 par dekhiye — hamara `DATABASE_URL` local MySQL nahi hai, balki AWS Tokyo data center ka cloud gateway hai: `gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000`. Iska connection pool `server/db.ts` mein SSL verification ke sath establish hota hai."*
+1. **`drizzle/schema.ts` (Line 16 & Line 71) — Table Ka Design (Blueprint):**  
+   Line 71 par `incidentReports = mysqlTable("incident_reports", { ... })` likha hai. Yeh batata hai ki table mein `id`, `description`, `category`, `anonymous`, aur `status` ke columns honge.
 
----
+2. **`server/db.ts` (Line 160) — 👈 ACTUAL SAVE LINE!**  
+   Yahan data actually database mein insert hota hai:
+   ```ts
+   const result = await db.insert(incidentReports).values(input);
+   ```
+   👉 Ma'am ko dikhana: *"Ma'am, yeh line 160 dekhiye: `db.insert(incidentReports).values(...)` — yahi wo code hai jo website ke form data ko SQL query bana kar TiDB Cloud database ke andar save karta hai!"*
 
-### 🟢 STEP 4: TiDB Cloud Console (AWS Tokyo) Kholkar Dikhao
+3. **`server/routers/digisakhi.ts` (Line 202-223) — tRPC API Route:**  
+   Line 202 par `reportIncident` procedure hai jo frontend se data receive karke `server/db.ts` ke function ko deta hai.
 
-* **☁️ Aapko Kya Karna Hai:**  
-  Browser mein `https://tidbcloud.com` kholo aur cluster **digisakhi** ka Overview aur Connect popup dikhao.
+#### 📸 Code Proof Screenshot:
+![Exact Code Flow](./images/step_code_insert.png)
+*Top: Table Definition in schema.ts | Bottom: Actual Save line db.insert() in server/db.ts Line 160.*
 
-* **📸 Screen Par Yeh Output Dikhai Dega:**  
-  ![TiDB Cluster Overview](./images/media_1791209274061.png)
-  *TiDB Cloud: Cluster `digisakhi`, AWS Tokyo `ap-northeast-1`, Status: `Active`.*  
-  ![TiDB Parameters](./images/media_1791209468836.png)
-  *Parameters popup: Host, Port 4000, Username matching `.env` exactly.*
-
-* **🗣️ Ma'am Ko Yeh Bolo:**  
-  > *"Ma'am, yeh hamara actual cloud database console hai. TiDB Serverless distributed architecture par chalta hai jo auto-scale hota hai aur 99.99% high availability provide karta hai."*
-
----
-
-### 🟢 STEP 5: Render Par Live Website Kholkar Dikhao
-
-* **🚀 Aapko Kya Karna Hai:**  
-  Browser mein new tab kholo aur live deployment link open karo:
-  ```text
-  https://digisakhi-32j7.onrender.com
-  ```
-
-* **📸 Screen Par Yeh Output Dikhai Dega:**  
-  ![Live Website](./images/live_website.png)
-  *Production deployed DigiSakhi website on Render.com.*
-
-* **🗣️ Ma'am Ko Yeh Bolo:**  
-  > *"Ma'am, yeh hamara project internet par globally live deployed hai. Iska backend Express server aur React frontend dono Render cloud par chal rahe hain aur AWS TiDB database se connected hain."*
+#### 🗣️ Ma'am Ko Yeh Bolo (Word-to-Word):
+> *"Ma'am, code 3 files mein divide hai:  
+> 1. `drizzle/schema.ts` mein humne saare tables ka structure define kiya hai.  
+> 2. `server/routers/digisakhi.ts` tRPC API route hai jo frontend se data receive karta hai.  
+> 3. `server/db.ts` ke Line 160 par `db.insert(incidentReports).values(input)` function data ko permanently cloud database mein insert karta hai."*
 
 ---
 
-### 🟢 STEP 6: Live Incident Report Form Bhar Kar Submit Karo (The Live Demo)
+### ❓ QUESTION 3: "Workflow Kya Hai? Frontend Se Database Tak Data Kaise Jata Hai?"
 
-* **📝 Aapko Kya Karna Hai (The Test):**  
-  Live website par **"Safety Toolkit"** section mein jao aur **"Report an incident"** par click karo. Form mein yeh values bharo:
-  - **Category:** `Fake UPI QR / Payment Request`
-  - **Description:** `Received fake 500 cashback QR on WhatsApp`
-  - **Anonymous:** Checked (Yes)
-  - Click **"Submit report"**
+#### 👶 10 Saal Ke Bachhe Jaisa Example:
+Socho tumne Zomato par pizza order kiya:
+1. Tumne phone mein button dabaya (Frontend)
+2. Zomato ke office message gaya (Backend Express API)
+3. Delivery boy kitchen se nikal gaya (Drizzle ORM)
+4. Pizza plate mein aa kar save ho gaya (TiDB Cloud Database)
 
-* **📸 Screen Par Yeh Output Dikhai Dega:**  
-  ![Incident Report Modal](./images/report_modal.png)
-  *Live incident reporting dialog opens, takes inputs, and sends to backend.*
+#### 🔄 The 5-Step Exact Technical Pipeline:
+1. **Step 1 (User Action):** Sakhi website par "Report an incident" form bharti hai aur "Submit report" dabati hai.
+2. **Step 2 (tRPC Call):** React frontend `trpc.digisakhi.reportIncident.useMutation()` call karta hai.
+3. **Step 3 (Server Validation):** Express server request receive karke Zod schema se text aur category validate karta hai.
+4. **Step 4 (ORM Translation):** `server/db.ts` mein Drizzle ORM JavaScript object ko SQL query banata hai: `INSERT INTO incident_reports...`
+5. **Step 5 (Cloud Storage):** Query internet par travel karke **AWS Tokyo TiDB Cloud** ke disk par permanently save ho jati hai aur auto-incremented ID return hoti hai!
 
-* **🗣️ Ma'am Ko Yeh Bolo:**  
-  > *"Ab Ma'am, main live website se ek anonymous cyber fraud complaint submit kar raha hoon. Jaise hi maine 'Submit report' dabaya, tRPC mutation ne request server ko bheji aur Drizzle ORM ne use TiDB Cloud me insert kar diya!"*
-
----
-
-### 🟢 STEP 7: Drizzle Studio Mein Wapas Aao Aur Refresh Dabao! (Full Marks Moment)
-
-* **⚡ Aapko Kya Karna Hai:**  
-  Browser mein **Step 2** wale Drizzle Studio tab (`https://local.drizzle.studio`) par wapas switch karo, aur top-right mein **"Refresh data" (🔄)** button click karo!
-
-* **📸 Screen Par Yeh Output Dikhai Dega:**  
-  ![Drizzle Studio Live Row](./images/step2_drizzle_studio.png)
-  *⚡ Row #1 successfully appears in real time! Category: Fake UPI QR, Status: New, Timestamp: Just now.*
-
-* **🗣️ Ma'am Ko Yeh Bolo (Final Punchline):**  
-  > *"Dekhiye Ma'am! Bina page reload kiye, website se bhara gaya form instantly hamare AWS Tokyo TiDB Cloud database mein save ho gaya aur Drizzle Studio ne naya record live fetch karke dikha diya. This proves the full end-to-end cloud pipeline is working!"*
+#### 🗣️ Ma'am Ko Yeh Bolo (Word-to-Word):
+> *"Ma'am, data ka workflow yeh hai: React Frontend Form ➔ tRPC Type-safe Client ➔ Express Node.js Server (Validation) ➔ Drizzle ORM (SQL Query Generator) ➔ TiDB Cloud (AWS Tokyo). Yeh poora pipeline encrypted TLS/SSL connection par chalta hai."*
 
 ---
 
-## 📊 Quick Reference: 8 Tables Summary
+### ❓ QUESTION 4: "Database Kaise Use Ho Raha Hai? All 8 Tables Ka Kya Kaam Hai?"
 
-| Table Name | Primary Key & Unique | Kisme Kya Store Hota Hai |
+#### 👶 10 Saal Ke Bachhe Jaisa Example:
+Jaise ek school mein alag-alag registers hote hain: ek Attendance ka, ek Marks ka, ek Complaint box ka, aur ek Notice board ka — waise hi hamare database mein alag-alag kaam ke liye **8 alag-alag tables** bane hain!
+
+| Table Name | Kisme Kya Save Hota Hai? | Real Life Example |
 | :--- | :--- | :--- |
-| `users` | `id` (PK), `openId` (UK) | User profile, role ('user'/'admin'), SHG group, preferred language |
-| `modules` | `id` (PK), `slug` (UK) | Cyber lessons content, bilingual title/description, quiz JSON data |
-| `learning_progress` | `id` (PK), `(userId, moduleId)` (UK) | User ka module completion state aur high score |
-| `quiz_attempts` | `id` (PK) | User ke quiz answers ka poora historical audit log |
-| `incident_reports` | `id` (PK) | Cyber scam reports (category, anonymous flag, status: New/Review/Resolved) |
-| `forum_posts` | `id` (PK) | Community discussion posts aur scam warning alerts |
-| `forum_replies` | `id` (PK) | Community forum posts ke replies |
-| `announcements` | `id` (PK) | Admin dwara publish kiye gaye urgent broadcast alerts |
+| `users` | User profile, role ('user'/'admin'), SHG group, language | Radha Devi (Member), Sakhi Coordinator (Admin) |
+| `modules` | Cyber awareness lessons & quiz questions | UPI Safety, Phishing Scams, Privacy |
+| `learning_progress` | Kis user ne kaunsa module complete kiya aur score | User 1 ne UPI Safety complete kiya, Score: 3/3 |
+| `quiz_attempts` | Har quiz attempt ke detailed answers ka audit log | Q1: Option B, Q2: Option A (Timestamp ke sath) |
+| `incident_reports` | Cyber fraud/scam complaints (Anonymous) | "Fake 500 cashback QR mila WhatsApp par" |
+| `forum_posts` | Sakhis ke sawaal aur scam warnings | "Gaon me naya electricity bill scam chal raha hai" |
+| `forum_replies` | Posts par dusri sakhis ke helpful answers | "Kisi ko OTP mat dena, 1930 pe call karo" |
+| `announcements` | Admin dwara bheje gaye urgent security alerts | "Urgent Alert: Fake PM Awas Yojana links se bachein" |
+
+#### 🗣️ Ma'am Ko Yeh Bolo (Word-to-Word):
+> *"Ma'am, database mein 8 normalized tables hain. Education ke liye `modules` aur `learning_progress` hai, incident tracking ke liye `incident_reports` hai, community support ke liye `forum_posts` aur `replies` hai, aur admin broadcasting ke liye `announcements` table use hota hai."*
+
+---
+
+### ❓ QUESTION 5: "Khol Ke Dikhao Sab Kuch Live! (The Live Demonstration)"
+
+Jab Ma'am kahein **"Mujhe samne screen par sab kuch dikhao aur live data save karke dikhao"**, toh yeh 4 windows kholna:
+
+#### 1️⃣ Window 1: Terminal Kholkar Command Run Karo
+VS Code me Terminal kholo aur likho: `pnpm drizzle-kit studio`  
+![Terminal Output](./images/step1_terminal.png)
+
+#### 2️⃣ Window 2: Chrome Mein Drizzle Studio Kholo
+URL: `https://local.drizzle.studio` ➔ Left side mein `incident_reports` table par click karo.  
+![Drizzle Studio](./images/step2_drizzle_studio.png)
+
+#### 3️⃣ Window 3: Live Website Kholkar Form Submit Karo
+URL: [https://digisakhi-32j7.onrender.com](https://digisakhi-32j7.onrender.com) ➔ "Report an Incident" form bharo aur submit karo.  
+![Incident Report Modal](./images/report_modal.png)
+
+#### 4️⃣ Window 4: Drizzle Studio Par Wapas Aao Aur Refresh (🔄) Dabao!
+Top-right me Refresh button dabao. Table mein instantly naya row #1 highlight ho jayega!  
+![Drizzle Studio Live Row](./images/step2_drizzle_studio.png)
+
+#### 🗣️ Ma'am Ko Yeh Bolo (The Full Marks Dialogue):
+> *"Dekhiye Ma'am, jaise hi maine Render par live chal rahi website se form submit kiya, Drizzle ORM ne `server/db.ts` ke through us data ko seedha **AWS Tokyo TiDB Cloud cluster** mein write kar diya. Aur Drizzle Studio ne refresh karte hi bina laptop restart kiye naya record screen par display kar diya. This proves our cloud database integration is 100% active and functioning!"*

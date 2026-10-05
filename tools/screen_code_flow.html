@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+    body { margin: 0; padding: 12px; background: #0f172a; font-family: 'Inter', sans-serif; }
+    .code-flow-card {
+      width: 960px; background: #1e1e1e; border-radius: 12px;
+      border: 1px solid #333; box-shadow: 0 20px 40px rgba(0,0,0,0.6); overflow: hidden;
+      font-family: 'Fira Code', monospace; margin-bottom: 20px;
+    }
+    .flow-topbar {
+      background: #252526; padding: 10px 16px; border-bottom: 1px solid #333;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .tab-badge { background: #007acc; color: #fff; font-size: 0.78rem; padding: 3px 10px; border-radius: 4px; font-weight: 600; }
+    .code-box { padding: 16px 20px; font-size: 0.86rem; line-height: 1.65; color: #d4d4d4; }
+    .line-no { color: #858585; margin-right: 14px; user-select: none; }
+    .token-comment { color: #6a9955; font-style: italic; }
+    .token-kw { color: #569cd6; font-weight: 600; }
+    .token-fn { color: #dcdcaa; }
+    .token-str { color: #ce9178; }
+    .token-var { color: #9cdcfe; }
+    .highlight-box {
+      background: rgba(16, 185, 129, 0.15); border-left: 4px solid #10b981;
+      margin: 8px -20px; padding: 6px 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PART 1: DRIZZLE SCHEMA TABLE BLUEPRINT -->
+  <div class="code-flow-card">
+    <div class="flow-topbar">
+      <span style="color:#fff; font-weight: 700; font-size: 0.9rem;">1. drizzle/schema.ts — Table Ka Blueprint (नक्शा)</span>
+      <span class="tab-badge">TABLE DEFINITION</span>
+    </div>
+    <div class="code-box">
+      <div><span class="line-no">71</span><span class="token-comment">// Table ka structure yahan define hota hai</span></div>
+      <div><span class="line-no">72</span><span class="token-kw">export const</span> <span class="token-var">incidentReports</span> = <span class="token-fn">mysqlTable</span>(<span class="token-str">"incident_reports"</span>, {</div>
+      <div><span class="line-no">73</span>  <span class="token-var">id</span>: <span class="token-fn">int</span>(<span class="token-str">"id"</span>).<span class="token-fn">autoincrement</span>().<span class="token-fn">primaryKey</span>(),</div>
+      <div><span class="line-no">74</span>  <span class="token-var">userId</span>: <span class="token-fn">int</span>(<span class="token-str">"userId"</span>),</div>
+      <div><span class="line-no">75</span>  <span class="token-var">description</span>: <span class="token-fn">text</span>(<span class="token-str">"description"</span>).<span class="token-fn">notNull</span>(),</div>
+      <div><span class="line-no">76</span>  <span class="token-var">category</span>: <span class="token-fn">varchar</span>(<span class="token-str">"category"</span>, { length: 64 }).<span class="token-fn">notNull</span>(),</div>
+      <div><span class="line-no">77</span>  <span class="token-var">anonymous</span>: <span class="token-fn">int</span>(<span class="token-str">"anonymous"</span>).<span class="token-fn">notNull</span>().<span class="token-fn">default</span>(1),</div>
+      <div><span class="line-no">78</span>  <span class="token-var">status</span>: <span class="token-fn">mysqlEnum</span>(<span class="token-str">"status"</span>, [<span class="token-str">"New"</span>, <span class="token-str">"In Review"</span>, <span class="token-str">"Resolved"</span>]).<span class="token-fn">default</span>(<span class="token-str">"New"</span>),</div>
+      <div><span class="line-no">79</span>  <span class="token-var">createdAt</span>: <span class="token-fn">timestamp</span>(<span class="token-str">"createdAt"</span>).<span class="token-fn">defaultNow</span>()</div>
+      <div><span class="line-no">80</span>});</div>
+    </div>
+  </div>
+
+  <!-- PART 2: SERVER DB.TS INSERT LOGIC -->
+  <div class="code-flow-card">
+    <div class="flow-topbar">
+      <span style="color:#fff; font-weight: 700; font-size: 0.9rem;">2. server/db.ts — Data Database Mein Save Karne Ka Code (लिखने वाला)</span>
+      <span class="tab-badge" style="background:#10b981;">DATA SAVE / INSERT</span>
+    </div>
+    <div class="code-box">
+      <div><span class="line-no">155</span><span class="token-kw">export async function</span> <span class="token-fn">createIncidentReport</span>(<span class="token-var">input</span>) {</div>
+      <div><span class="line-no">158</span>  <span class="token-kw">const</span> <span class="token-var">db</span> = <span class="token-kw">await</span> <span class="token-fn">getDb</span>(); <span class="token-comment">// Connects to AWS Tokyo TiDB</span></div>
+      <div class="highlight-box">
+        <span class="line-no">160</span>  <span class="token-kw">const</span> <span class="token-var">result</span> = <span class="token-kw">await</span> <span class="token-var">db</span>.<span class="token-fn">insert</span>(<span class="token-var">incidentReports</span>).<span class="token-fn">values</span>(<span class="token-var">input</span>); 
+        <span class="token-comment">// 👈 YAHAN PE DATABASE MEIN SAVE HOTA HAI!</span>
+      </div>
+      <div><span class="line-no">161</span>  <span class="token-kw">const</span> <span class="token-var">id</span> = <span class="token-fn">Number</span>(<span class="token-var">result</span>[0].<span class="token-var">insertId</span>);</div>
+      <div><span class="line-no">168</span>  <span class="token-kw">return</span> <span class="token-var">created</span>[0];</div>
+      <div><span class="line-no">169</span>}</div>
+    </div>
+  </div>
+
+</body>
+</html>

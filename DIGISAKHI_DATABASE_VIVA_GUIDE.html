@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DigiSakhi — Step-by-Step Live Database Viva Visual Playbook</title>
+  <title>DigiSakhi — 5 Master Questions Viva Guide (10 Saal Ke Bachhe Jaisi Simple)</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
 
@@ -14,6 +14,8 @@
       --success-light: #ecfdf5;
       --sky: #0284c7;
       --sky-light: #f0f9ff;
+      --amber: #f59e0b;
+      --amber-light: #fffbeb;
       --text-main: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
@@ -69,7 +71,7 @@
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       font-weight: 800;
       color: #0f172a;
       letter-spacing: -0.02em;
@@ -77,88 +79,110 @@
     }
 
     .subtitle {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       color: var(--text-muted);
     }
 
-    .viva-step-card {
+    /* QUESTION MASTER CARDS */
+    .question-block {
       background: #ffffff;
-      border: 2px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 26px;
-      margin: 32px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-      transition: border-color 0.2s;
-    }
-    .viva-step-card:hover {
-      border-color: #cbd5e1;
+      border: 2px solid #cbd5e1;
+      border-radius: 18px;
+      padding: 28px;
+      margin: 36px 0;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
     }
 
-    .step-banner {
+    .q-header {
       display: flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #f1f5f9;
     }
 
-    .step-pill {
+    .q-badge {
       background: #4f46e5;
       color: white;
       font-weight: 800;
-      font-size: 0.88rem;
+      font-size: 1rem;
       padding: 6px 16px;
-      border-radius: 9999px;
+      border-radius: 10px;
       letter-spacing: 0.05em;
     }
 
-    .step-heading {
-      font-size: 1.35rem;
-      font-weight: 700;
+    .q-title {
+      font-size: 1.45rem;
+      font-weight: 800;
       color: #1e1b4b;
     }
 
-    .action-instruction-box {
-      background: #f8fafc;
-      border-left: 4px solid #4f46e5;
-      padding: 14px 18px;
-      border-radius: 0 10px 10px 0;
-      margin-bottom: 18px;
-      font-size: 0.98rem;
+    /* CHILD LEVEL ANALOGY BOX */
+    .analogy-box {
+      background: var(--amber-light);
+      border: 1px solid #fcd34d;
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin: 18px 0;
     }
-
-    .command-box {
-      background: #0f172a;
-      color: #38bdf8;
-      font-family: 'Fira Code', monospace;
-      padding: 12px 18px;
-      border-radius: 8px;
-      margin: 10px 0;
-      font-size: 0.95rem;
+    .analogy-title {
+      font-weight: 800;
+      color: #92400e;
+      font-size: 1rem;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
+    }
+    .analogy-text {
+      color: #78350f;
+      font-size: 1.02rem;
+      line-height: 1.6;
     }
 
+    /* CODE EXPLANATION BOX */
+    .code-explanation-card {
+      background: #f8fafc;
+      border-left: 5px solid #0284c7;
+      border-radius: 0 12px 12px 0;
+      padding: 18px 22px;
+      margin: 18px 0;
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-file-tag {
+      display: inline-block;
+      background: #0284c7;
+      color: white;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    /* SCREENSHOT FRAME */
     .screenshot-frame {
       border: 1px solid #cbd5e1;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
       background: #09090b;
-      margin: 18px 0;
+      margin: 20px 0;
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     }
-
     .screenshot-frame img {
       width: 100%;
       height: auto;
       display: block;
     }
-
     .screenshot-footer {
       background: #f8fafc;
       border-top: 1px solid #e2e8f0;
-      padding: 10px 16px;
-      font-size: 0.88rem;
+      padding: 10px 18px;
+      font-size: 0.9rem;
       color: #475569;
       font-weight: 600;
       display: flex;
@@ -173,47 +197,39 @@
       font-size: 0.78rem;
     }
 
-    .maam-dialogue-box {
+    /* SPOKEN DIALOGUE SCRIPT */
+    .dialogue-card {
       background: #f0fdf4;
-      border: 1px solid #bbf7d0;
+      border: 1.5px solid #86efac;
       border-radius: 12px;
-      padding: 16px 20px;
-      margin-top: 16px;
+      padding: 18px 22px;
+      margin-top: 20px;
     }
-
-    .dialogue-tag {
-      font-size: 0.82rem;
+    .dialogue-label {
+      font-size: 0.85rem;
       font-weight: 800;
       color: #166534;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
-
-    .dialogue-text {
+    .dialogue-speech {
       color: #14532d;
-      font-size: 1.02rem;
+      font-size: 1.05rem;
       font-weight: 500;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
-    .table-summary-grid {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 18px 0;
-      font-size: 0.92rem;
-    }
-    .table-summary-grid th, .table-summary-grid td {
-      border: 1px solid #e2e8f0;
-      padding: 10px 14px;
-      text-align: left;
-    }
-    .table-summary-grid th {
-      background: #f8fafc;
-      font-weight: 600;
+    code {
+      font-family: 'Fira Code', monospace;
+      background: #f1f5f9;
+      color: #d946ef;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
     }
 
     .print-float-btn {
@@ -234,15 +250,13 @@
       align-items: center;
       gap: 8px;
     }
-    .print-float-btn:hover {
-      background: #4338ca;
-    }
+    .print-float-btn:hover { background: #4338ca; }
 
     @media print {
       body { padding: 0; background: white; }
       .container { border: none; box-shadow: none; padding: 0; max-width: 100%; }
       .print-float-btn { display: none; }
-      .viva-step-card { page-break-inside: avoid; border: 1px solid #ccc; margin: 20px 0; }
+      .question-block { page-break-inside: avoid; border: 1px solid #ccc; margin: 20px 0; }
     }
   </style>
 </head>
@@ -255,306 +269,312 @@
   <div class="container">
     <header>
       <div class="live-badge">TiDB Cloud (AWS Tokyo) + Render Production Live</div>
-      <h1>DigiSakhi (डिजी सखी)</h1>
-      <div class="subtitle">Complete Database Step-by-Step Visual Viva Guide</div>
+      <h1>DigiSakhi — 5 Master Viva Questions</h1>
+      <div class="subtitle">10 Saal Ke Bachhe Jaisi Simple Language Mein Poora Database &amp; Code Samajhna</div>
       <p style="margin-top: 10px; font-size: 0.92rem; color: #64748b;">
         <strong>Live Production URL:</strong> <a href="https://digisakhi-32j7.onrender.com" target="_blank" style="color:#4f46e5; font-weight:600;">https://digisakhi-32j7.onrender.com</a> | 
         <strong>GitHub:</strong> <a href="https://github.com/sachin-saroj/digisakhi" target="_blank" style="color:#4f46e5; font-weight:600;">github.com/sachin-saroj/digisakhi</a>
       </p>
     </header>
 
-    <div style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 18px; margin-bottom: 28px;">
-      <h3 style="color: #3730a3; margin-bottom: 6px;">🎯 Yeh Guide Kaise Use Karni Hai:</h3>
-      <p style="color: #312e81; font-size: 0.96rem; margin-bottom: 0;">
-        Bhai, jab Ma'am samne baithe hon, toh bas <strong>Step 1 se lekar Step 7</strong> tak sequence mein chalte jao. Har step mein maine likh diya hai ki <strong>kya kholna hai</strong>, <strong>kya run karna hai</strong>, <strong>screen par kya output aayega (screenshot ke sath)</strong>, aur <strong>Ma'am ko kya bolna hai</strong>.
-      </p>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- STEP 1: TERMINAL & DRIZZLE STUDIO COMMAND -->
-    <!-- ========================================== -->
-    <div class="viva-step-card">
-      <div class="step-banner">
-        <span class="step-pill">STEP 1</span>
-        <span class="step-heading">Terminal Kholo Aur Drizzle Studio Run Karo</span>
+    <!-- ============================================================= -->
+    <!-- QUESTION 1: DATABASE KAHAN HAI? -->
+    <!-- ============================================================= -->
+    <div class="question-block">
+      <div class="q-header">
+        <span class="q-badge">QUESTION 1</span>
+        <span class="q-title">"Database Kahan Hai?" (Where is the Database?)</span>
       </div>
 
-      <div class="action-instruction-box">
-        <strong>💻 Aapko Kya Karna Hai:</strong><br>
-        VS Code mein Terminal kholo (keyboard shortcut: <code>Ctrl + `</code> ya top menu me <code>Terminal ➔ New Terminal</code>) aur yeh command likh kar Enter dabao:
-      </div>
-
-      <div class="command-box">
-        <span>pnpm drizzle-kit studio</span>
-        <span style="color: #94a3b8; font-size: 0.8rem;">Press Enter</span>
-      </div>
-
-      <div class="screenshot-frame">
-        <img src="./images/step1_terminal.png" alt="Terminal Output of pnpm drizzle-kit studio">
-        <div class="screenshot-footer">
-          <span>OUTPUT SCREENSHOT</span> Terminal par green checkmarks aayenge: TiDB Serverless (AWS Tokyo) connected &amp; listening on port 4983.
+      <div class="analogy-box">
+        <div class="analogy-title">👶 10 Saal Ke Bachhe Jaisa Example:</div>
+        <div class="analogy-text">
+          Jaise tumhare phone ki photos tumhare phone ke tootne par bhi delete nahi hoti kyunki wo <strong>Google Drive / Cloud</strong> par save rehti hain, bilkul waise hi hamara database laptop ke kisi folder me nahi hai. Hamara database <strong>AWS (Amazon)</strong> ke <strong>Tokyo (Japan)</strong> cloud data center mein 24/7 chal raha hai!
         </div>
       </div>
 
-      <div class="maam-dialogue-box">
-        <div class="dialogue-tag">🗣️ Ma'am Ko Yeh Bolo:</div>
-        <div class="dialogue-text">
-          "Ma'am, hum <strong>Drizzle Studio</strong> start kar rahe hain jo hamare local environment ko <strong>AWS Tokyo</strong> ke <strong>TiDB Cloud MySQL</strong> database ke sath TLS/SSL encrypted bridge ke through live connect karta hai."
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- STEP 2: OPEN DRIZZLE STUDIO IN CHROME -->
-    <!-- ========================================== -->
-    <div class="viva-step-card">
-      <div class="step-banner">
-        <span class="step-pill">STEP 2</span>
-        <span class="step-heading">Browser Mein Drizzle Studio Kholkar All 8 Tables Dikhao</span>
-      </div>
-
-      <div class="action-instruction-box">
-        <strong>🌐 Aapko Kya Karna Hai:</strong><br>
-        Google Chrome browser kholo aur address bar mein yeh URL daalo:
-      </div>
-
-      <div class="command-box">
-        <span>https://local.drizzle.studio</span>
-        <span style="color: #94a3b8; font-size: 0.8rem;">Open in Chrome</span>
-      </div>
-
-      <div class="screenshot-frame">
-        <img src="./images/step2_drizzle_studio.png" alt="Drizzle Studio Visual Database Interface">
-        <div class="screenshot-footer">
-          <span>OUTPUT SCREENSHOT</span> Drizzle Studio Interface: Left sidebar shows all 8 tables. Center shows live data rows &amp; refresh button.
-        </div>
-      </div>
-
-      <div class="maam-dialogue-box">
-        <div class="dialogue-tag">🗣️ Ma'am Ko Yeh Bolo:</div>
-        <div class="dialogue-text">
-          "Dekhiye Ma'am, yeh hamare database ka visual interface hai. Left sidebar me hamare saare <strong>8 tables</strong> hain: <code>users</code>, <code>modules</code>, <code>incident_reports</code>, <code>learning_progress</code>, <code>quiz_attempts</code>, <code>forum_posts</code>, <code>forum_replies</code>, aur <code>announcements</code>."
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- STEP 3: SHOW VS CODE .ENV FILE -->
-    <!-- ========================================== -->
-    <div class="viva-step-card">
-      <div class="step-banner">
-        <span class="step-pill">STEP 3</span>
-        <span class="step-heading">VS Code Mein .env Aur Connection String Dikhao</span>
-      </div>
-
-      <div class="action-instruction-box">
-        <strong>📁 Aapko Kya Karna Hai:</strong><br>
-        VS Code ke file explorer mein <code>.env</code> file par click karo aur Line 2 dikhao.
-      </div>
-
-      <div class="screenshot-frame">
-        <img src="./images/step3_vscode.png" alt="VS Code showing .env file">
-        <div class="screenshot-footer">
-          <span>OUTPUT SCREENSHOT</span> VS Code Editor: Line 2 shows <code>DATABASE_URL</code> pointing to TiDB Cloud AWS Tokyo Gateway.
-        </div>
-      </div>
-
-      <div class="maam-dialogue-box">
-        <div class="dialogue-tag">🗣️ Ma'am Ko Yeh Bolo:</div>
-        <div class="dialogue-text">
-          "Ma'am, Line 2 par dekhiye — hamara <code>DATABASE_URL</code> local MySQL nahi hai, balki AWS Tokyo data center ka cloud gateway hai: <code>gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000</code>. Iska connection pool <code>server/db.ts</code> mein SSL verification ke sath establish hota hai."
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- STEP 4: SHOW TIDB CLUSTER IN CLOUD -->
-    <!-- ========================================== -->
-    <div class="viva-step-card">
-      <div class="step-banner">
-        <span class="step-pill">STEP 4</span>
-        <span class="step-heading">TiDB Cloud Console (AWS Tokyo) Kholkar Dikhao</span>
-      </div>
-
-      <div class="action-instruction-box">
-        <strong>☁️ Aapko Kya Karna Hai:</strong><br>
-        Browser mein <a href="https://tidbcloud.com" target="_blank"><code>https://tidbcloud.com</code></a> kholo aur cluster <strong>digisakhi</strong> ka Overview dikhao.
+      <div class="code-explanation-card">
+        <span class="code-file-tag">📁 File: .env (Line 2)</span>
+        <p style="margin-bottom: 6px;">
+          Ma'am ko VS Code mein <code>.env</code> file kholkar Line 2 dikhao:
+        </p>
+        <code style="display:block; padding:10px; background:#0f172a; color:#38bdf8; border-radius:8px;">
+          DATABASE_URL="mysql://3iybbhkz3wcgD4S.root:***@gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/test"
+        </code>
+        <p style="margin-top: 8px; font-size: 0.92rem; color: #475569;">
+          👉 Yahan dekho: <code>gateway01.ap-northeast-1.prod.aws.tidbcloud.com</code> ka matlab hai <strong>AWS Tokyo (ap-northeast-1)</strong>. Port: <code>4000</code>.
+        </p>
       </div>
 
       <div class="screenshot-frame">
         <img src="./images/media_1791209274061.png" alt="TiDB Cloud Cluster Overview">
         <div class="screenshot-footer">
-          <span>OUTPUT SCREENSHOT 1</span> TiDB Cloud Dashboard: Cluster: <strong>digisakhi</strong> | Cloud: <strong>AWS</strong> | Region: <strong>Tokyo (ap-northeast-1)</strong> | Status: <strong>Active (Green)</strong>
+          <span>PROOF SCREENSHOT 1</span> TiDB Cloud Console: Cluster 'digisakhi' | Cloud: AWS | Region: Tokyo (ap-northeast-1) | Status: Active
         </div>
-      </div>
-
-      <div class="screenshot-frame" style="margin-top: 14px;">
-        <img src="./images/media_1791209468836.png" alt="TiDB Connection Parameters Popup">
-        <div class="screenshot-footer">
-          <span>OUTPUT SCREENSHOT 2</span> TiDB Connect Popup: Host, Port 4000, and Username matching the exact parameters in our .env.
-        </div>
-      </div>
-
-      <div class="maam-dialogue-box">
-        <div class="dialogue-tag">🗣️ Ma'am Ko Yeh Bolo:</div>
-        <div class="dialogue-text">
-          "Ma'am, yeh hamara actual cloud database console hai. TiDB Serverless distributed architecture par chalta hai jo auto-scale hota hai aur 99.99% high availability provide karta hai."
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- STEP 5: OPEN LIVE PRODUCTION WEBSITE -->
-    <!-- ========================================== -->
-    <div class="viva-step-card">
-      <div class="step-banner">
-        <span class="step-pill">STEP 5</span>
-        <span class="step-heading">Render Par Live Website Kholkar Dikhao</span>
-      </div>
-
-      <div class="action-instruction-box">
-        <strong>🚀 Aapko Kya Karna Hai:</strong><br>
-        Browser mein new tab kholo aur live deployment link open karo:
-      </div>
-
-      <div class="command-box">
-        <span>https://digisakhi-32j7.onrender.com</span>
-        <span style="color: #94a3b8; font-size: 0.8rem;">Open Live App</span>
       </div>
 
       <div class="screenshot-frame">
-        <img src="./images/live_website.png" alt="Live DigiSakhi Home on Render">
+        <img src="./images/media_1791209468836.png" alt="TiDB Cloud Parameters">
         <div class="screenshot-footer">
-          <span>OUTPUT SCREENSHOT</span> Live DigiSakhi Website: Full-stack Node.js + React running in production on Render.com.
+          <span>PROOF SCREENSHOT 2</span> TiDB Connect Popup: Host, Port 4000, and Username matching Line 2 of .env.
         </div>
       </div>
 
-      <div class="maam-dialogue-box">
-        <div class="dialogue-tag">🗣️ Ma'am Ko Yeh Bolo:</div>
-        <div class="dialogue-text">
-          "Ma'am, yeh hamara project internet par globally live deployed hai. Iska backend Express server aur React frontend dono Render cloud par chal rahe hain aur AWS TiDB database se connected hain."
+      <div class="dialogue-card">
+        <div class="dialogue-label">🗣️ Ma'am Ko Yeh Bolo (Word-to-Word):</div>
+        <div class="dialogue-speech">
+          "Ma'am, hamara database local computer par nahi hai. Hamara database <strong>Amazon Web Services (AWS)</strong> ke <strong>Tokyo region</strong> mein <strong>TiDB Cloud Serverless</strong> par hosted hai. Humne cloud database isliye use kiya kyunki hamari website Render par globally live hai (<code>https://digisakhi-32j7.onrender.com</code>), taaki koi bhi Sakhi apne phone se report submit kare toh data instantly cloud database me save ho sake."
         </div>
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- STEP 6: SUBMIT A LIVE INCIDENT REPORT -->
-    <!-- ========================================== -->
-    <div class="viva-step-card">
-      <div class="step-banner">
-        <span class="step-pill">STEP 6</span>
-        <span class="step-heading">Live Incident Report Form Bhar Kar Submit Karo</span>
+    <!-- ============================================================= -->
+    <!-- QUESTION 2: FILE MEIN KAHA HAI CODE AUR SAVE KAHA HORA HAI? -->
+    <!-- ============================================================= -->
+    <div class="question-block">
+      <div class="q-header">
+        <span class="q-badge">QUESTION 2</span>
+        <span class="q-title">"File Mein Kahan Hai Code? Aur Data Save Kahan Ho Raha Hai?"</span>
       </div>
 
-      <div class="action-instruction-box">
-        <strong>📝 Aapko Kya Karna Hai (The Live Test):</strong><br>
-        Live website par <strong>"Safety Toolkit"</strong> section mein jao aur <strong>"Report an incident"</strong> par click karo. Form mein yeh values bharo:
-        <ul style="margin-left: 20px; margin-top: 6px;">
-          <li><strong>Category:</strong> "Fake UPI QR / Payment Request"</li>
-          <li><strong>Description:</strong> "Received fake 500 cashback QR on WhatsApp"</li>
-          <li><strong>Anonymous:</strong> Checked (Yes)</li>
-          <li>Click <strong>"Submit report"</strong></li>
-        </ul>
+      <div class="analogy-box">
+        <div class="analogy-title">👶 10 Saal Ke Bachhe Jaisa Example:</div>
+        <div class="analogy-text">
+          Socho school mein ek <strong>Register (Diary)</strong> hoti hai.
+          <br>1. Diary ka layout/columns (Roll No, Name, Fees) kisne banaya? ➔ <strong><code>schema.ts</code></strong> ne!
+          <br>2. Diary mein pen se naam kisne likha (save kiya)? ➔ <strong><code>db.ts</code></strong> ne!
+          <br>3. Aur likhne ke baad diary kahan rakhi gayi? ➔ <strong>TiDB Cloud ke AWS Tokyo locker</strong> mein!
+        </div>
+      </div>
+
+      <!-- THE 3 CODE FILES EXPLAINED -->
+      <div class="code-explanation-card">
+        <span class="code-file-tag">1. File: drizzle/schema.ts (Line 16 &amp; Line 71)</span>
+        <p style="margin-bottom: 4px;"><strong>Yahan Table Ka Design (Blueprint) Hai:</strong></p>
+        <p style="font-size: 0.95rem;">
+          Line 71 par <code>incidentReports = mysqlTable("incident_reports", { ... })</code> likha hai. Yeh batata hai ki table mein <code>id</code>, <code>description</code>, <code>category</code>, <code>anonymous</code>, aur <code>status</code> ke columns honge.
+        </p>
+      </div>
+
+      <div class="code-explanation-card" style="border-left-color: #10b981;">
+        <span class="code-file-tag" style="background:#10b981;">2. File: server/db.ts (Line 160) — 👈 ACTUAL SAVE LINE!</span>
+        <p style="margin-bottom: 4px;"><strong>Yahan Actually Data Database Mein INSERT / SAVE Hota Hai:</strong></p>
+        <code style="display:block; padding:10px; background:#0f172a; color:#34d399; border-radius:8px; margin: 8px 0;">
+          const result = await db.insert(incidentReports).values(input);
+        </code>
+        <p style="font-size: 0.95rem; color: #334155;">
+          👉 Ma'am ko dikhana: <em>"Ma'am, yeh line 160 dekhiye: <code>db.insert(incidentReports).values(...)</code> — yahi wo code hai jo website se aane wale form data ko SQL query bana kar TiDB Cloud database ke andar write (save) karta hai!"</em>
+        </p>
+      </div>
+
+      <div class="code-explanation-card" style="border-left-color: #f59e0b;">
+        <span class="code-file-tag" style="background:#f59e0b;">3. File: server/routers/digisakhi.ts (Line 202-223)</span>
+        <p style="margin-bottom: 4px;"><strong>Yahan Frontend Se Request Aati Hai (tRPC API):</strong></p>
+        <p style="font-size: 0.95rem;">
+          Line 202 par <code>reportIncident</code> procedure hai jo frontend se data lekar <code>server/db.ts</code> ke <code>createIncidentReport()</code> function ko pass karta hai.
+        </p>
       </div>
 
       <div class="screenshot-frame">
-        <img src="./images/report_modal.png" alt="Report an Incident Modal Dialog">
+        <img src="./images/step_code_insert.png" alt="Schema and DB Insert Code Comparison">
         <div class="screenshot-footer">
-          <span>OUTPUT SCREENSHOT</span> Live Incident Report Dialog: User submits incident data directly to the backend.
+          <span>CODE PROOF SCREENSHOT</span> Left/Top: Table Definition in schema.ts | Right/Bottom: db.insert() in server/db.ts Line 160.
         </div>
       </div>
 
-      <div class="maam-dialogue-box">
-        <div class="dialogue-tag">🗣️ Ma'am Ko Yeh Bolo:</div>
-        <div class="dialogue-text">
-          "Ab Ma'am, main live website se ek anonymous cyber fraud complaint submit kar raha hoon. Jaise hi maine 'Submit report' dabaya, tRPC mutation ne request server ko bheji aur Drizzle ORM ne use TiDB Cloud me insert kar diya!"
+      <div class="dialogue-card">
+        <div class="dialogue-label">🗣️ Ma'am Ko Yeh Bolo (Word-to-Word):</div>
+        <div class="dialogue-speech">
+          "Ma'am, code 3 files mein divide hai:
+          <br>1. <code>drizzle/schema.ts</code> mein humne saare tables ka structure define kiya hai.
+          <br>2. <code>server/routers/digisakhi.ts</code> tRPC API route hai jo frontend se data receive karta hai.
+          <br>3. <code>server/db.ts</code> ke Line 160 par <code>db.insert(incidentReports).values(input)</code> function data ko permanently cloud database mein insert karta hai."
         </div>
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- STEP 7: REFRESH DRIZZLE STUDIO (THE MOMENT) -->
-    <!-- ========================================== -->
-    <div class="viva-step-card">
-      <div class="step-banner">
-        <span class="step-pill">STEP 7</span>
-        <span class="step-heading">Drizzle Studio Mein Wapas Aao Aur Refresh Dabao!</span>
+    <!-- ============================================================= -->
+    <!-- QUESTION 3: WORKFLOW KYA HAI? KAISE KAAM KARTA HAI? -->
+    <!-- ============================================================= -->
+    <div class="question-block">
+      <div class="q-header">
+        <span class="q-badge">QUESTION 3</span>
+        <span class="q-title">"Workflow Kya Hai? Frontend Se Database Tak Data Kaise Jata Hai?"</span>
       </div>
 
-      <div class="action-instruction-box">
-        <strong>⚡ Aapko Kya Karna Hai (Full Marks Moment!):</strong><br>
-        Browser mein <strong>Step 2</strong> wale Drizzle Studio tab (<code>https://local.drizzle.studio</code>) par wapas switch karo, aur top-right mein <strong>"Refresh data" (🔄)</strong> button click karo!
-      </div>
-
-      <div class="screenshot-frame">
-        <img src="./images/step2_drizzle_studio.png" alt="Drizzle Studio showing newly added row">
-        <div class="screenshot-footer">
-          <span>OUTPUT SCREENSHOT</span> ⚡ Row #1 successfully appears in real time! Category: Fake UPI QR, Status: New, Timestamp: Just now.
+      <div class="analogy-box">
+        <div class="analogy-title">👶 10 Saal Ke Bachhe Jaisa Example:</div>
+        <div class="analogy-text">
+          Socho tumne Zomato par pizza order kiya:
+          <br>1. Tumne phone mein button dabaya (Frontend)
+          <br>2. Zomato ke office message gaya (Backend Express API)
+          <br>3. Delivery boy pizza lekar kitchen se nikal gaya (Drizzle ORM)
+          <br>4. Pizza kitchen mein cook ho kar plate mein aa gaya (TiDB Cloud Database)
         </div>
       </div>
 
-      <div class="maam-dialogue-box">
-        <div class="dialogue-tag">🗣️ Ma'am Ko Yeh Bolo (Final Punchline):</div>
-        <div class="dialogue-text">
-          "Dekhiye Ma'am! Bina page reload kiye, website se bhara gaya form instantly hamare AWS Tokyo TiDB Cloud database mein save ho gaya aur Drizzle Studio ne naya record live fetch karke dikha diya. This proves the full end-to-end cloud pipeline is working!"
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:18px; margin: 18px 0;">
+        <h4 style="color:#1e1b4b; margin-bottom:10px;">🔄 The 5-Step Exact Technical Pipeline:</h4>
+        <ol style="margin-left: 20px; line-height: 2; font-size: 0.98rem;">
+          <li><strong>Step 1 (User Action):</strong> Sakhi website par "Report an incident" form bharti hai aur "Submit report" dabati hai.</li>
+          <li><strong>Step 2 (tRPC Call):</strong> React frontend <code>trpc.digisakhi.reportIncident.useMutation()</code> call karta hai.</li>
+          <li><strong>Step 3 (Server Validation):</strong> Express server request receive karke Zod schema se text aur category validate karta hai.</li>
+          <li><strong>Step 4 (ORM Translation):</strong> <code>server/db.ts</code> mein Drizzle ORM JavaScript object ko SQL query banata hai: <code>INSERT INTO incident_reports...</code></li>
+          <li><strong>Step 5 (Cloud Storage):</strong> Query internet par travel karke <strong>AWS Tokyo TiDB Cloud</strong> ke hard disk par permanently save ho jati hai aur auto-incremented ID (e.g. <code>id: 1</code>) return hoti hai!</li>
+        </ol>
+      </div>
+
+      <div class="dialogue-card">
+        <div class="dialogue-label">🗣️ Ma'am Ko Yeh Bolo (Word-to-Word):</div>
+        <div class="dialogue-speech">
+          "Ma'am, data ka workflow yeh hai: React Frontend Form ➔ tRPC Type-safe Client ➔ Express Node.js Server (Validation) ➔ Drizzle ORM (SQL Query Generator) ➔ TiDB Cloud (AWS Tokyo). Yeh poora pipeline encrypted TLS/SSL connection par chalta hai."
         </div>
       </div>
     </div>
 
-    <!-- TABLE REFERENCE CHEAT SHEET -->
-    <div style="margin-top: 40px; padding: 24px; background: #f8fafc; border-radius: 14px; border: 1px solid #e2e8f0;">
-      <h3 style="color: #1e293b; margin-bottom: 12px;">📊 Quick Reference: 8 Tables Summary</h3>
-      <table class="table-summary-grid">
+    <!-- ============================================================= -->
+    <!-- QUESTION 4: DATABASE KAISE USE HORA HAI? TABLES KAUNSE HAIN? -->
+    <!-- ============================================================= -->
+    <div class="question-block">
+      <div class="q-header">
+        <span class="q-badge">QUESTION 4</span>
+        <span class="q-title">"Database Kaise Use Ho Raha Hai? All 8 Tables Ka Kya Kaam Hai?"</span>
+      </div>
+
+      <div class="analogy-box">
+        <div class="analogy-title">👶 10 Saal Ke Bachhe Jaisa Example:</div>
+        <div class="analogy-text">
+          Jaise ek school mein alag-alag registers hote hain: ek Attendance ka, ek Marks ka, ek Complaint box ka, aur ek Notice board ka — waise hi hamare database mein alag-alag kaam ke liye <strong>8 alag-alag tables</strong> bane hain!
+        </div>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; margin:18px 0; font-size:0.92rem;">
         <thead>
-          <tr>
-            <th>Table Name</th>
-            <th>Primary Key &amp; Unique</th>
-            <th>Kisme Kya Store Hota Hai</th>
+          <tr style="background:#f8fafc;">
+            <th style="border:1px solid #e2e8f0; padding:10px 14px; text-align:left;">Table Name</th>
+            <th style="border:1px solid #e2e8f0; padding:10px 14px; text-align:left;">Kisme Kya Save Hota Hai?</th>
+            <th style="border:1px solid #e2e8f0; padding:10px 14px; text-align:left;">Real Life Example</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><code>users</code></td>
-            <td><code>id</code> (PK), <code>openId</code> (UK)</td>
-            <td>User profile, role ('user'/'admin'), SHG group, preferred language</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;"><code>users</code></td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">User profile, role ('user'/'admin'), SHG group, language</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Radha Devi (Member), Sakhi Coordinator (Admin)</td>
           </tr>
           <tr>
-            <td><code>modules</code></td>
-            <td><code>id</code> (PK), <code>slug</code> (UK)</td>
-            <td>Cyber lessons content, bilingual title/description, quiz JSON data</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;"><code>modules</code></td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Cyber awareness lessons &amp; quiz questions</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">UPI Safety, Phishing Scams, Privacy</td>
           </tr>
           <tr>
-            <td><code>learning_progress</code></td>
-            <td><code>id</code> (PK), <code>(userId, moduleId)</code> (UK)</td>
-            <td>User ka module completion state aur high score</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;"><code>learning_progress</code></td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Kis user ne kaunsa module complete kiya aur score</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">User 1 ne UPI Safety complete kiya, Score: 3/3</td>
           </tr>
           <tr>
-            <td><code>quiz_attempts</code></td>
-            <td><code>id</code> (PK)</td>
-            <td>User ke quiz answers ka poora historical audit log</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;"><code>quiz_attempts</code></td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Har quiz attempt ke detailed answers ka audit log</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Q1: Option B, Q2: Option A (Timestamp ke sath)</td>
           </tr>
           <tr>
-            <td><code>incident_reports</code></td>
-            <td><code>id</code> (PK)</td>
-            <td>Cyber scam reports (category, anonymous flag, status: New/Review/Resolved)</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;"><code>incident_reports</code></td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Cyber fraud/scam complaints (Anonymous)</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">"Fake 500 cashback QR mila WhatsApp par"</td>
           </tr>
           <tr>
-            <td><code>forum_posts</code></td>
-            <td><code>id</code> (PK)</td>
-            <td>Community discussion posts aur scam warning alerts</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;"><code>forum_posts</code></td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Sakhis ke sawaal aur scam warnings</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">"Gaon me naya electricity bill scam chal raha hai"</td>
           </tr>
           <tr>
-            <td><code>forum_replies</code></td>
-            <td><code>id</code> (PK)</td>
-            <td>Community forum posts ke replies</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;"><code>forum_replies</code></td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Posts par dusri sakhis ke helpful answers</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">"Kisi ko OTP mat dena, 1930 pe call karo"</td>
           </tr>
           <tr>
-            <td><code>announcements</code></td>
-            <td><code>id</code> (PK)</td>
-            <td>Admin dwara publish kiye gaye urgent broadcast alerts</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;"><code>announcements</code></td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">Admin dwara bheje gaye urgent security alerts</td>
+            <td style="border:1px solid #e2e8f0; padding:10px 14px;">"Urgent Alert: Fake PM Awas Yojana links se bachein"</td>
           </tr>
         </tbody>
       </table>
+
+      <div class="dialogue-card">
+        <div class="dialogue-label">🗣️ Ma'am Ko Yeh Bolo (Word-to-Word):</div>
+        <div class="dialogue-speech">
+          "Ma'am, database mein 8 normalized tables hain. Education ke liye <code>modules</code> aur <code>learning_progress</code> hai, incident tracking ke liye <code>incident_reports</code> hai, community support ke liye <code>forum_posts</code> aur <code>replies</code> hai, aur admin broadcasting ke liye <code>announcements</code> table use hota hai."
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- QUESTION 5: KHOL KE DIKHAO SAB KUCH LIVE! -->
+    <!-- ============================================================= -->
+    <div class="question-block">
+      <div class="q-header">
+        <span class="q-badge">QUESTION 5</span>
+        <span class="q-title">"Khol Ke Dikhao Sab Kuch! (The Live Demonstration)"</span>
+      </div>
+
+      <p style="font-size: 1.05rem; margin-bottom: 20px;">
+        Jab Ma'am kahein <strong>"Mujhe samne screen par sab kuch dikhao aur live data save karke dikhao"</strong>, toh yeh 4 windows kholna:
+      </p>
+
+      <!-- STEP A: TERMINAL -->
+      <div class="code-explanation-card">
+        <strong>1️⃣ Window 1: Terminal Kholkar Command Run Karo</strong><br>
+        VS Code me Terminal kholo aur likho: <code>pnpm drizzle-kit studio</code>
+      </div>
+      <div class="screenshot-frame">
+        <img src="./images/step1_terminal.png" alt="Terminal Running Drizzle Studio">
+        <div class="screenshot-footer">
+          <span>WINDOW 1 SCREENSHOT</span> Terminal par Drizzle Studio start ho gaya (port 4983) and TiDB Cloud connected.
+        </div>
+      </div>
+
+      <!-- STEP B: DRIZZLE STUDIO -->
+      <div class="code-explanation-card" style="border-left-color: #10b981;">
+        <strong>2️⃣ Window 2: Chrome Mein Drizzle Studio Kholo</strong><br>
+        URL: <code>https://local.drizzle.studio</code> ➔ Left side mein <code>incident_reports</code> table par click karo.
+      </div>
+      <div class="screenshot-frame">
+        <img src="./images/step2_drizzle_studio.png" alt="Drizzle Studio Visual Tables">
+        <div class="screenshot-footer">
+          <span>WINDOW 2 SCREENSHOT</span> Drizzle Studio GUI: Yahan saare 8 tables aur unka live data dikhta hai.
+        </div>
+      </div>
+
+      <!-- STEP C: LIVE WEBSITE & FORM -->
+      <div class="code-explanation-card" style="border-left-color: #f59e0b;">
+        <strong>3️⃣ Window 3: Live Website Kholkar Form Submit Karo</strong><br>
+        URL: <a href="https://digisakhi-32j7.onrender.com" target="_blank"><code>https://digisakhi-32j7.onrender.com</code></a> ➔ "Report an Incident" form bharo aur submit karo.
+      </div>
+      <div class="screenshot-frame">
+        <img src="./images/report_modal.png" alt="Live Incident Report Modal on Website">
+        <div class="screenshot-footer">
+          <span>WINDOW 3 SCREENSHOT</span> Live website par form bhara aur "Submit report" dabaya.
+        </div>
+      </div>
+
+      <!-- STEP D: REFRESH AND SHOW NEW ROW -->
+      <div class="code-explanation-card" style="border-left-color: #a855f7;">
+        <strong>4️⃣ Window 4: Drizzle Studio Par Wapas Aao Aur Refresh (🔄) Dabao!</strong><br>
+        Top-right me Refresh button dabao. Table mein instantly naya row #1 highlight ho jayega!
+      </div>
+      <div class="screenshot-frame">
+        <img src="./images/step2_drizzle_studio.png" alt="Drizzle Studio Live Data Row Added">
+        <div class="screenshot-footer">
+          <span>WINDOW 4 SCREENSHOT</span> ⚡ Row #1 live add ho chuki hai! Category: Fake UPI QR, Status: New, Timestamp: Just now.
+        </div>
+      </div>
+
+      <div class="dialogue-card">
+        <div class="dialogue-label">🗣️ Ma'am Ko Yeh Bolo (The Full Marks Dialogue):</div>
+        <div class="dialogue-speech">
+          "Dekhiye Ma'am, jaise hi maine Render par live chal rahi website se form submit kiya, Drizzle ORM ne <code>server/db.ts</code> ke through us data ko seedha <strong>AWS Tokyo TiDB Cloud cluster</strong> mein write kar diya. Aur Drizzle Studio ne refresh karte hi bina laptop restart kiye naya record screen par display kar diya. This proves our cloud database integration is 100% active and functioning!"
+        </div>
+      </div>
     </div>
 
     <footer style="margin-top: 40px; text-align: center; color: var(--text-muted); font-size: 0.88rem;">
