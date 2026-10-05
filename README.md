@@ -319,24 +319,6 @@ pnpm build
 
 ---
 
-## 🎓 College Viva & Evaluation FAQ
-
-When presenting DigiSakhi to evaluators or viva examiners, reference these core architectural points:
-
-**Q1: Where is the database hosted, and how is it connected?**
-> *"The database is hosted on **TiDB Cloud Serverless** in the AWS Tokyo region (`gateway01.ap-northeast-1.prod.aws.tidbcloud.com`). It communicates using standard MySQL protocol over a TLS/SSL encrypted connection pool managed by **Drizzle ORM**."*
-
-**Q2: How does the Scam Checker protect user privacy?**
-> *"The scam detection engine operates entirely **client-side** in JavaScript using heuristic pattern matching and regular expressions. Users' pasted personal messages, transaction alerts, or phone numbers never leave the browser and are never stored on any server."*
-
-**Q3: How is data flow organized between the frontend and database?**
-> *"Data communication is completely type-safe via **tRPC**. When a user completes a quiz, the frontend calls the procedure `trpc.digisakhi.saveQuizAttempt.useMutation()`. The Express backend validates the payload, applies business logic, and executes parameterized queries through Drizzle ORM to update `learning_progress` and `quiz_attempts`."*
-
-**Q4: How does role-based access control work?**
-> *"Users are assigned either the `user` or `admin` role in the `users` table. Administrative tRPC procedures (`createAnnouncement`, `updateIncidentStatus`) are guarded by middleware that validates the user's role from their decoded session token before allowing execution."*
-
----
-
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
