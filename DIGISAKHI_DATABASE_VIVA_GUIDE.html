@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DigiSakhi — Database & Viva Master Guide</title>
+  <title>DigiSakhi — Complete Database & Viva Master Guide (With Real Screenshots)</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
 
@@ -31,17 +31,17 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       line-height: 1.65;
       color: var(--text-main);
-      background-color: #f8fafc;
+      background-color: #f1f5f9;
       padding: 40px 20px;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       background: var(--bg-card);
       padding: 48px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
       border: 1px solid var(--border);
     }
 
@@ -57,25 +57,25 @@
       gap: 6px;
       background: #ecfdf5;
       color: #065f46;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.85rem;
-      padding: 4px 12px;
+      padding: 6px 14px;
       border-radius: 9999px;
       border: 1px solid #a7f3d0;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .badge-live::before {
       content: '';
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       background: #10b981;
       border-radius: 50%;
-      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       font-weight: 800;
       color: #0f172a;
       letter-spacing: -0.02em;
@@ -83,29 +83,29 @@
     }
 
     .subtitle {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       color: var(--text-muted);
     }
 
     h2 {
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       font-weight: 700;
       color: #1e1b4b;
-      margin-top: 40px;
-      margin-bottom: 16px;
+      margin-top: 44px;
+      margin-bottom: 18px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      border-left: 4px solid var(--primary);
-      padding-left: 12px;
+      gap: 12px;
+      border-left: 5px solid var(--primary);
+      padding-left: 14px;
     }
 
     h3 {
-      font-size: 1.18rem;
+      font-size: 1.2rem;
       font-weight: 600;
       color: #334155;
-      margin-top: 24px;
-      margin-bottom: 10px;
+      margin-top: 26px;
+      margin-bottom: 12px;
     }
 
     p {
@@ -117,18 +117,19 @@
     .callout {
       background: var(--primary-light);
       border: 1px solid #c7d2fe;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px 0;
+      border-radius: 14px;
+      padding: 22px;
+      margin: 22px 0;
     }
 
     .callout-title {
       font-weight: 700;
       color: #3730a3;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 8px;
+      font-size: 1.05rem;
     }
 
     .callout-success {
@@ -140,67 +141,73 @@
     }
 
     .dialogue-box {
-      background: #f1f5f9;
+      background: #f8fafc;
       border-left: 4px solid #0284c7;
-      padding: 18px 20px;
-      border-radius: 0 12px 12px 0;
-      margin: 16px 0;
+      padding: 18px 22px;
+      border-radius: 0 14px 14px 0;
+      margin: 18px 0;
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
     }
 
     .dialogue-question {
       font-weight: 700;
       color: #0369a1;
-      font-size: 1.05rem;
-      margin-bottom: 8px;
+      font-size: 1.08rem;
+      margin-bottom: 10px;
     }
 
     .dialogue-hindi {
       background: white;
-      padding: 12px 16px;
-      border-radius: 8px;
+      padding: 14px 18px;
+      border-radius: 10px;
       border: 1px solid #e2e8f0;
-      margin-bottom: 8px;
-      font-size: 0.98rem;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      line-height: 1.7;
     }
 
     .dialogue-english {
       font-style: italic;
       color: #475569;
-      font-size: 0.92rem;
+      font-size: 0.94rem;
+      padding-left: 4px;
     }
 
     .step-card {
       background: #ffffff;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 16px 0;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      border-radius: 14px;
+      padding: 22px;
+      margin: 18px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     }
 
     .step-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .step-number {
       background: var(--primary);
       color: white;
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      flex-shrink: 0;
     }
 
     .step-title {
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       color: #0f172a;
     }
 
@@ -208,20 +215,21 @@
       font-family: 'Fira Code', monospace;
       background: #f1f5f9;
       color: #d946ef;
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 2px 7px;
+      border-radius: 5px;
       font-size: 0.88em;
     }
 
     pre {
       background: #0f172a;
       color: #f8fafc;
-      padding: 16px;
-      border-radius: 10px;
+      padding: 18px;
+      border-radius: 12px;
       overflow-x: auto;
       margin: 14px 0;
       font-family: 'Fira Code', monospace;
       font-size: 0.88rem;
+      border: 1px solid #334155;
     }
 
     pre code {
@@ -233,13 +241,13 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 22px 0;
       font-size: 0.95rem;
     }
 
     th, td {
       border: 1px solid var(--border);
-      padding: 12px 14px;
+      padding: 12px 16px;
       text-align: left;
     }
 
@@ -253,52 +261,66 @@
       background: #fafafa;
     }
 
-    .screenshot-box {
-      border: 2px dashed #cbd5e1;
-      border-radius: 12px;
-      padding: 12px;
-      background: #f8fafc;
-      margin: 20px 0;
-      text-align: center;
+    /* SCREENSHOT STYLING */
+    .screenshot-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 14px;
+      background: #ffffff;
+      margin: 24px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     }
 
-    .screenshot-box img {
-      max-width: 100%;
+    .screenshot-card img {
+      width: 100%;
       height: auto;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      display: block;
     }
 
     .screenshot-caption {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 8px;
-      font-weight: 500;
+      font-size: 0.9rem;
+      color: #475569;
+      margin-top: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .screenshot-caption span {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
     }
 
     .action-btn-print {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--primary);
+      bottom: 28px;
+      right: 28px;
+      background: #4f46e5;
       color: white;
       border: none;
-      padding: 14px 24px;
+      padding: 14px 26px;
       border-radius: 50px;
       font-weight: 700;
-      font-size: 1rem;
-      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
+      font-size: 1.05rem;
+      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       transition: all 0.2s ease;
       z-index: 100;
     }
 
     .action-btn-print:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.5);
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.55);
+      background: #4338ca;
     }
 
     @media print {
@@ -318,6 +340,11 @@
       .page-break {
         page-break-before: always;
       }
+      .screenshot-card {
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+      }
     }
   </style>
 </head>
@@ -332,24 +359,32 @@
       <div class="badge-live">TiDB Cloud + Render Production Live</div>
       <h1>DigiSakhi (डिजी सखी)</h1>
       <div class="subtitle">Complete Database Architecture & College Viva Master Guide</div>
-      <p style="margin-top: 10px; font-size: 0.9rem; color: #64748b;">
-        <strong>Live Production URL:</strong> <a href="https://digisakhi-32j7.onrender.com" target="_blank">https://digisakhi-32j7.onrender.com</a><br>
-        <strong>GitHub Repository:</strong> <a href="https://github.com/sachin-saroj/digisakhi" target="_blank">https://github.com/sachin-saroj/digisakhi</a>
+      <p style="margin-top: 12px; font-size: 0.95rem; color: #64748b;">
+        <strong>🌐 Live Production URL:</strong> <a href="https://digisakhi-32j7.onrender.com" target="_blank" style="color: #4f46e5; font-weight: 600;">https://digisakhi-32j7.onrender.com</a><br>
+        <strong>🐙 GitHub Repository:</strong> <a href="https://github.com/sachin-saroj/digisakhi" target="_blank" style="color: #4f46e5; font-weight: 600;">https://github.com/sachin-saroj/digisakhi</a>
       </p>
     </header>
 
-    <!-- SECTION 0: RELAX -->
+    <!-- CONFIDENCE SECTION -->
     <div class="callout callout-success">
-      <div class="callout-title">💡 Viva Dene Se Pehle Yeh Baat Yaad Rakho:</div>
+      <div class="callout-title">💡 Viva Dene Se Pehle Yeh Baat Yaad Rakho (Confidence Booster):</div>
       <p style="margin-bottom: 0;">
-        Tumhara project <strong>100% complete aur live</strong> hai. Database AWS Cloud par hosted hai, website Render par chal rahi hai, aur Drizzle Studio tumhare browser me ready hai. Ma'am ko dikhane ke liye tumhare paas real evidence hai. Darna bilkul nahi hai!
+        Tumhara project <strong>100% complete aur internet par live</strong> hai! Database AWS Cloud par hosted hai, website Render par chal rahi hai, aur Drizzle Studio me saare 8 tables live refresh hote hain. Ma'am ko dikhane ke liye tumhare paas real screenshots aur live working links hain. <strong>Darna bilkul nahi hai!</strong>
       </p>
     </div>
 
+    <!-- LIVE HOMEPAGE SCREENSHOT -->
+    <div class="screenshot-card">
+      <img src="./images/live_website.png" alt="DigiSakhi Live Website on Render">
+      <div class="screenshot-caption">
+        <span>SCREENSHOT 1</span> Live Website: <strong>https://digisakhi-32j7.onrender.com</strong> (Render Production Build)
+      </div>
+    </div>
+
     <!-- SECTION 1: CORE CONCEPT -->
-    <h2>1. Sabse Bada Confusion: Database Kahan Hai?</h2>
+    <h2>1. Sabse Bada Sawal: "Database Kahan Hai?"</h2>
     <p>
-      College ke students aksar sochte hain ki database unke laptop ke kisi folder me hoga (jaise <code>C:\digisakhi\database.sql</code>). <strong>Lekin aisa modern web apps me nahi hota!</strong>
+      College ke students aksar sochte hain ki database unke laptop ke kisi folder me hoga (jaise <code>C:\digisakhi\database.sql</code>). <strong>Lekin modern web applications me aisa nahi hota!</strong>
     </p>
 
     <div class="dialogue-box">
@@ -362,21 +397,32 @@
       </div>
     </div>
 
-    <div class="screenshot-box">
+    <!-- TIDB CLUSTER SCREENSHOT -->
+    <div class="screenshot-card">
       <img src="./images/media_1791209274061.png" alt="TiDB Cloud Cluster Overview">
-      <div class="screenshot-caption">Screenshot 1: TiDB Cloud Console — Cluster: digisakhi | AWS Tokyo (ap-northeast-1) | Status: Active</div>
+      <div class="screenshot-caption">
+        <span>SCREENSHOT 2</span> TiDB Cloud Console: Cluster Name: <strong>digisakhi</strong> | AWS Tokyo (ap-northeast-1) | Status: <strong>Active (Green)</strong>
+      </div>
     </div>
 
     <div class="callout">
       <div class="callout-title">🤔 Ma'am puchein: "Cloud database kyun use kiya? Local MySQL kyun nahi?"</div>
       <p style="margin-bottom: 0;">
-        <strong>Aapka Jawab:</strong> "Ma'am, local MySQL sirf mere laptop pe chalta. Kyunki hamara project Render par live deployed hai (<code>https://digisakhi-32j7.onrender.com</code>), agar koi SHG member apne mobile se login karegi ya scam report karegi, toh local database access nahi ho sakta. TiDB Cloud ki wajah se data kisi bhi device se instantly cloud par save hota hai."
+        <strong>Aapka Jawab:</strong> "Ma'am, local MySQL sirf mere laptop pe chalta. Kyunki hamara project Render par globally live deployed hai (<code>https://digisakhi-32j7.onrender.com</code>), agar koi SHG member apne mobile se login karegi ya scam report karegi, toh local database access nahi ho sakta. TiDB Cloud ki wajah se data kisi bhi device se instantly AWS Cloud par save hota hai."
       </p>
+    </div>
+
+    <!-- TIDB CONNECTION PARAMETERS SCREENSHOT -->
+    <div class="screenshot-card">
+      <img src="./images/media_1791209468836.png" alt="TiDB Connection Parameters">
+      <div class="screenshot-caption">
+        <span>SCREENSHOT 3</span> TiDB Cloud Connection Parameters: Host <code>gateway01.ap-northeast-1.prod.aws.tidbcloud.com</code>, Port <code>4000</code> (Matches line 2 of .env)
+      </div>
     </div>
 
     <!-- SECTION 2: THE 4 BIG VIVA QUESTIONS -->
     <div class="page-break"></div>
-    <h2>2. Ma'am Ke 4 Sabse Important Sawal & Exact Script</h2>
+    <h2>2. Ma'am Ke 4 Sabse Important Sawal & Exact Script (Word-to-Word)</h2>
 
     <!-- Q1 -->
     <div class="step-card">
@@ -388,7 +434,7 @@
       
       <div class="dialogue-hindi">
         <strong>Aap bologe:</strong><br>
-        "Ma'am, hamara database <strong>TiDB Cloud (AWS)</strong> par hosted hai. Aur usko visual inspect karne ke liye hum <strong>Drizzle Studio</strong> use karte hain. Dekhiye, yeh hamare database ke saare 8 tables hain: <code>users</code>, <code>modules</code>, <code>incident_reports</code>, <code>learning_progress</code>, <code>quiz_attempts</code>, <code>forum_posts</code>, <code>forum_replies</code>, aur <code>announcements</code>."
+        "Ma'am, hamara database <strong>TiDB Cloud (AWS Tokyo)</strong> par hosted hai. Aur usko visual inspect karne ke liye hum <strong>Drizzle Studio</strong> use karte hain. Dekhiye, yeh hamare database ke saare 8 tables hain: <code>users</code>, <code>modules</code>, <code>incident_reports</code>, <code>learning_progress</code>, <code>quiz_attempts</code>, <code>forum_posts</code>, <code>forum_replies</code>, aur <code>announcements</code>."
       </div>
 
       <p style="margin-top: 10px;"><strong>Terminal Command (agar dobara kholna ho):</strong></p>
@@ -406,10 +452,10 @@
       <div class="dialogue-hindi">
         <strong>Aap bologe:</strong><br>
         "Ma'am, data 5 simple steps mein frontend se cloud database tak travel karta hai:<br><br>
-        <strong>1. User Action (Frontend):</strong> User website pe form bharta hai (e.g. Incident Report ya Quiz).<br>
+        <strong>1. User Action (Frontend):</strong> User website pe form bharta hai (e.g. Incident Report ya Quiz complete karta hai).<br>
         <strong>2. tRPC Mutation:</strong> React app type-safe tRPC procedure call karti hai (<code>trpc.digisakhi.submitIncident</code>).<br>
         <strong>3. Express Server:</strong> Hamara Node.js server request receive karta hai aur Zod schema se input validate karta hai.<br>
-        <strong>4. Drizzle ORM:</strong> Drizzle ORM JavaScript function ko parameterized SQL INSERT query me convert karta hai.<br>
+        <strong>4. Drizzle ORM:</strong> Drizzle ORM JavaScript function ko parameterized SQL <code>INSERT</code> query me convert karta hai.<br>
         <strong>5. TiDB Cloud:</strong> Query TLS/SSL encrypted connection ke through AWS Tokyo database me execute hoti hai aur row save ho jati hai."
       </div>
 
@@ -508,13 +554,22 @@
         <div class="step-title">Live Form Bharo (Report an Incident)</div>
       </div>
       <p>Home page par <strong>"Safety Toolkit"</strong> section me jao ➔ <strong>"Report an Incident"</strong> par click karo.</p>
+
+      <!-- INCIDENT MODAL SCREENSHOT -->
+      <div class="screenshot-card">
+        <img src="./images/report_modal.png" alt="Report an Incident Modal">
+        <div class="screenshot-caption">
+          <span>SCREENSHOT 4</span> Live Incident Reporting Modal: Category, Description & Anonymous Submission
+        </div>
+      </div>
+
       <ul style="margin-left: 20px; margin-top: 8px;">
         <li><strong>Category:</strong> "Fake UPI QR / Payment Request"</li>
         <li><strong>Description:</strong> "Someone sent fake 500 cashback QR on WhatsApp"</li>
         <li><strong>Anonymous:</strong> Checked (Yes)</li>
-        <li><strong>Button:</strong> Click <strong>"Submit Incident"</strong></li>
+        <li><strong>Button:</strong> Click <strong>"Submit report"</strong></li>
       </ul>
-      <p style="margin-top: 8px; color: var(--success); font-weight: 600;">Website par popup aayega: "Report Submitted Successfully!"</p>
+      <p style="margin-top: 8px; color: var(--success); font-weight: 600;">Website par message aayega: "Report Submitted Successfully!"</p>
     </div>
 
     <div class="step-card">
@@ -522,8 +577,8 @@
         <div class="step-number">4</div>
         <div class="step-title">Tab 1 (Drizzle Studio) Par Wapas Aao</div>
       </div>
-      <p>Top-right me <strong>Refresh (गोल तीर)</strong> icon par click karo.</p>
-      <p style="color: var(--primary); font-weight: 700; font-size: 1.05rem;">
+      <p>Top-right me <strong>Refresh (गोल तीर 🔄)</strong> icon par click karo.</p>
+      <p style="color: var(--primary); font-weight: 700; font-size: 1.1rem; margin: 10px 0;">
         ⚡ BOOM! Table me nayi row add ho chuki hai!
       </p>
       <p>Category: <code>Fake UPI QR / Payment Request</code>, Status: <code>New</code>, Timestamp: Current Time!</p>
@@ -536,6 +591,14 @@
       </div>
       <div class="dialogue-hindi">
         "Dekhiye Ma'am, jaise hi maine Render par live website se incident report submit kiya, Drizzle ORM ne use hamare TiDB Cloud cluster me instantly write kar diya aur hume bina page reload kiye naya record yahan display ho gaya!"
+      </div>
+    </div>
+
+    <!-- MEMBER SIGN IN SCREENSHOT -->
+    <div class="screenshot-card">
+      <img src="./images/signin_modal.png" alt="Member Sign In Modal">
+      <div class="screenshot-caption">
+        <span>SCREENSHOT 5</span> Member & Coordinator Authentication Dialog (Manages roles in <code>users</code> table)
       </div>
     </div>
 
@@ -575,15 +638,18 @@
       </tbody>
     </table>
 
-    <div class="screenshot-box">
-      <img src="./images/media_1791209468836.png" alt="TiDB Connection Parameters">
-      <div class="screenshot-caption">Screenshot 2: TiDB Cloud Database Connection Parameters (Host, Port 4000, Username)</div>
+    <!-- RENDER DEPLOY SCREENSHOT -->
+    <div class="screenshot-card">
+      <img src="./images/media_1791212610676.png" alt="Render Deploys Dashboard">
+      <div class="screenshot-caption">
+        <span>SCREENSHOT 6</span> Render.com Deployment Dashboard: Service <code>digisakhi</code> linked with GitHub Repository
+      </div>
     </div>
 
     <!-- SECTION 5: QUICK CHEAT SHEET -->
     <h2>5. Quick Cheat Sheet (Exam Se 5 Minute Pehle Revision)</h2>
     <div class="callout">
-      <ul style="margin-left: 20px; line-height: 2;">
+      <ul style="margin-left: 20px; line-height: 2.2;">
         <li><strong>Database Name:</strong> TiDB Serverless (MySQL 8.0 compatible)</li>
         <li><strong>Cloud Provider:</strong> AWS (Amazon Web Services), Region: Tokyo (ap-northeast-1)</li>
         <li><strong>ORM Library:</strong> Drizzle ORM (TypeScript-first type-safe ORM)</li>
@@ -594,7 +660,7 @@
       </ul>
     </div>
 
-    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
       DigiSakhi — College Project Viva Guide | Created with ❤️ for Sachin Saroj
     </footer>
   </div>

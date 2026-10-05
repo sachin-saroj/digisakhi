@@ -7,7 +7,7 @@
 ---
 
 ## 💡 Viva Dene Se Pehle Yeh Baat Yaad Rakho (Confidence Booster)
-Bhai, tumhara project **100% complete aur live** hai!
+Bhai, tumhara project **100% complete aur internet par live** hai!
 - Database **AWS Cloud (Tokyo)** par 24/7 chal raha hai.
 - Website **Render.com** par live globally accessible hai.
 - **Drizzle Studio** tumhare laptop me chal raha hai jahan live rows refresh hoti hain.
@@ -15,9 +15,12 @@ Bhai, tumhara project **100% complete aur live** hai!
 
 Ma'am jo bhi puchein, tumhare paas screen pe dikhane ke liye real proof hai. Darna bilkul nahi hai!
 
+![Live Website](./images/live_website.png)
+*Screenshot 1: Live DigiSakhi Website on Render (https://digisakhi-32j7.onrender.com)*
+
 ---
 
-## 1. Sabse Bada Confusion: "Database Kahan Hai?"
+## 1. Sabse Bada Sawal: "Database Kahan Hai?"
 
 College students aksar sochte hain ki database unke laptop ke kisi folder me hoga (jaise `C:\digisakhi\database.sql`). **Lekin modern web applications mein aisa nahi hota!**
 
@@ -25,8 +28,14 @@ College students aksar sochte hain ki database unke laptop ke kisi folder me hog
 * **Simple Bhasha:** Hamara database hamare laptop me nahi hai. Hamara database **Amazon Web Services (AWS)** ke **Tokyo (Japan)** data center mein **TiDB Cloud** par 24/7 live chal raha hai.
 * **English Answer:** *"Our database is not stored on localhost. It is a cloud-hosted Serverless MySQL cluster managed on TiDB Cloud within the AWS Tokyo (ap-northeast-1) region."*
 
+![TiDB Cluster Overview](./images/media_1791209274061.png)
+*Screenshot 2: TiDB Cloud Cluster Overview — AWS Tokyo (ap-northeast-1), Status: Active*
+
 ### 🤔 Agar Ma'am puchein: "Cloud database kyun use kiya? Local MySQL kyun nahi?"
-* **Aapka Jawab:** *"Ma'am, local MySQL sirf mere laptop pe chalta. Kyunki hamara project Render par live deployed hai (`https://digisakhi-32j7.onrender.com`), agar koi SHG member apne mobile se login karegi ya scam report karegi, toh local database access nahi ho sakta. TiDB Cloud ki wajah se data kisi bhi device se instantly cloud par save hota hai."*
+* **Aapka Jawab:** *"Ma'am, local MySQL sirf mere laptop pe chalta. Kyunki hamara project Render par live deployed hai (`https://digisakhi-32j7.onrender.com`), agar koi SHG member apne mobile se login karegi ya scam report karegi, toh local database access nahi ho sakta. TiDB Cloud ki wajah se data kisi bhi device se instantly AWS Cloud par save hota hai."*
+
+![TiDB Connection Parameters](./images/media_1791209468836.png)
+*Screenshot 3: TiDB Cloud Database Connection Parameters (Host, Port 4000, Username)*
 
 ---
 
@@ -80,18 +89,25 @@ Jab Ma'am kahein **"Mujhe live data save karke dikhao"**, toh yeh 5 steps follow
 
 3. **Live Form Bharo (Report an Incident)**  
    Home page par **"Safety Toolkit"** section me jao ➔ **"Report an Incident"** par click karo.  
+
+![Incident Modal](./images/report_modal.png)
+*Screenshot 4: Incident Reporting Dialog on Live Website*
+
    - Category: `Fake UPI QR / Payment Request`  
    - Description: `Received fake 500 cashback QR on WhatsApp`  
    - Anonymous: Checked (Yes)  
-   - Click **"Submit Incident"**  
+   - Click **"Submit report"**  
    *(Website par popup aayega: "Report Submitted Successfully!")*
 
 4. **Tab 1 (Drizzle Studio) Par Wapas Aao**  
-   Top-right me **Refresh (गोल तीर)** icon par click karo.  
+   Top-right me **Refresh (गोल तीर 🔄)** icon par click karo.  
    ⚡ **BOOM!** Table me nayi row add ho chuki hai! Category: `Fake UPI QR / Payment Request`, Status: `New`, Timestamp: Current Time!
 
 5. **Ma'am Ko Yeh Line Bolo:**  
    > *"Dekhiye Ma'am, jaise hi maine Render par live website se incident report submit kiya, Drizzle ORM ne use hamare TiDB Cloud cluster me instantly write kar diya aur hume bina page reload kiye naya record yahan display ho gaya!"*
+
+![Member Sign In](./images/signin_modal.png)
+*Screenshot 5: Member & Admin Authentication Modal*
 
 ---
 
@@ -103,6 +119,9 @@ Jab Ma'am kahein **"Mujhe live data save karke dikhao"**, toh yeh 5 steps follow
 | `drizzle/schema.ts` | Database Schema & Tables | Line 16: `export const users = mysqlTable(...)`<br>Line 71: `export const incidentReports = mysqlTable(...)` |
 | `server/db.ts` | SSL Cloud Connection Pool | Line 21: `drizzle({ connection: { uri, ssl } })` (TLS encryption for cloud) |
 | `server/routers/digisakhi.ts` | Data Save Karne Ka Backend Code | Line 144: `db.insert(incidentReports).values(...)`<br>Line 115: `db.insert(learningProgress).values(...)` |
+
+![Render Deploys](./images/media_1791212610676.png)
+*Screenshot 6: Render.com Cloud Deployment Dashboard for DigiSakhi*
 
 ---
 
