@@ -1,0 +1,21 @@
+# Project TODO
+
+- [x] Inspect the existing DigiSakhi implementation and design decisions
+- [x] Confirm the user's requested edit or feature scope
+- [x] Implement the confirmed project changes
+- [x] Add or update Vitest coverage for the confirmed changes
+- [x] Run type checks, tests, and visual verification
+- [x] Save a checkpoint after the verified changes
+- [x] Polish the homepage content hierarchy and primary calls to action
+- [x] Improve mobile navigation and responsive layout behavior
+- [x] Add clearer interaction feedback for learning, toolkit, and community actions
+- [x] Preserve bilingual labels and safety-first messaging throughout the polish
+- [x] Add meaningful regression coverage for report validation and community-post validation behavior
+- [x] Finish localizing all newly added confirmation and feedback copy in English and Hindi
+- [x] Localize the newly added low-risk scam-checker feedback in English and Hindi
+- [x] Add stronger branch-level regression coverage for report and community submission outcomes
+- [x] Re-verify the full polish pass after the remaining gaps are resolved
+- [x] Add regression coverage that exercises the report and community submission behavior branches used by the homepage
+- [x] Re-run final desktop and mobile visual verification after the last interaction edits
+- [ ] Save a verified project checkpoint with the completed changes
+- [x] Re-run desktop visual verification after the final interaction and localization edits

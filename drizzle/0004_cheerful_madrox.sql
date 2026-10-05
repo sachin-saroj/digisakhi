@@ -1,0 +1,2 @@
+ALTER TABLE `incident_reports` MODIFY COLUMN `status` enum('New','In Review','Resolved') NOT NULL DEFAULT 'New';--> statement-breakpoint
+ALTER TABLE `incident_reports` ADD `updatedAt` timestamp DEFAULT (now()) NOT NULL ON UPDATE CURRENT_TIMESTAMP;
