@@ -28,6 +28,7 @@ import {
   UserRound,
   Users,
   X,
+  LogOut,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -513,13 +514,19 @@ function Logo({ compact = false }: { compact?: boolean }) {
 function Topbar({
   lang,
   setLang,
+  user,
   onLogin,
+  onLogout,
   onMenu,
+  onAdminOpen,
 }: {
   lang: "en" | "hi";
   setLang: (l: "en" | "hi") => void;
+  user: { name?: string | null; role: "user" | "admin"; email?: string | null } | null;
   onLogin: () => void;
+  onLogout: () => void;
   onMenu: () => void;
+  onAdminOpen?: () => void;
 }) {
   return (
     <header className="sticky top-0 z-40 border-b border-[#ded8cc] bg-[#faf9f4]/90 backdrop-blur-md">
@@ -537,6 +544,14 @@ function Topbar({
           <a href="#forum" className="transition hover:text-[#0F766E]">
             {lang === "en" ? "Community" : "समुदाय"}
           </a>
+          {user?.role === "admin" && onAdminOpen ? (
+            <button
+              onClick={onAdminOpen}
+              className="text-[#7C3AED] font-bold transition hover:opacity-80"
+            >
+              {lang === "en" ? "Admin Workspace" : "एडमिन कार्यक्षेत्र"}
+            </button>
+          ) : null}
         </nav>
         <div className="flex items-center gap-2">
           <button
@@ -547,19 +562,58 @@ function Topbar({
             <Languages size={15} />
             {lang === "en" ? "हिंदी" : "English"}
           </button>
-          <Button
-            onClick={onLogin}
-            className="hidden rounded-full bg-[#0F766E] px-5 text-sm hover:bg-[#0b625c] sm:flex"
-          >
-            {lang === "en" ? "Member sign in" : "सदस्य लॉगिन"}
-          </Button>
-          <Button
-            onClick={onLogin}
-            size="sm"
-            className="rounded-full bg-[#0F766E] px-3 text-xs hover:bg-[#0b625c] sm:hidden"
-          >
-            {lang === "en" ? "Sign in" : "लॉगिन"}
-          </Button>
+          {user ? (
+            <div className="flex items-center gap-2.5">
+              <div className="hidden flex-col items-end sm:flex leading-tight text-right">
+                <span className="max-w-[140px] truncate text-xs font-bold text-[#18201e]">
+                  {user.name || "Sakhi Member"}
+                </span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#0F766E]">
+                  {user.role === "admin"
+                    ? lang === "en"
+                      ? "Coordinator (Admin)"
+                      : "समन्वयक (एडमिन)"
+                    : lang === "en"
+                      ? "Member"
+                      : "सखी सदस्य"}
+                </span>
+              </div>
+              <div
+                className="grid h-9 w-9 place-items-center rounded-full bg-[#0F766E] text-xs font-bold text-white shadow-sm"
+                title={user.name || "User"}
+              >
+                {(user.name || "DS").slice(0, 2).toUpperCase()}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onLogout}
+                className="rounded-full text-xs text-[#8b4024] hover:bg-[#fff0e8]"
+                title={lang === "en" ? "Sign out" : "लॉगआउट"}
+              >
+                <LogOut size={15} />
+                <span className="hidden md:inline ml-1">
+                  {lang === "en" ? "Sign out" : "लॉगआउट"}
+                </span>
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button
+                onClick={onLogin}
+                className="hidden rounded-full bg-[#0F766E] px-5 text-sm hover:bg-[#0b625c] sm:flex"
+              >
+                {lang === "en" ? "Member sign in" : "सदस्य लॉगिन"}
+              </Button>
+              <Button
+                onClick={onLogin}
+                size="sm"
+                className="rounded-full bg-[#0F766E] px-3 text-xs hover:bg-[#0b625c] sm:hidden"
+              >
+                {lang === "en" ? "Sign in" : "लॉगिन"}
+              </Button>
+            </>
+          )}
           <button
             onClick={onMenu}
             className="rounded-full p-2.5 text-[#37423f] transition hover:bg-[#eeeae1] lg:hidden"
@@ -598,13 +652,125 @@ function QuickExit({ lang }: { lang: "en" | "hi" }) {
 }
 
 function LoginModal({ close, lang }: { close: () => void; lang: "en" | "hi" }) {
+  const [tab, setTab] = useState<"demo" | "phone" | "register">("demo");
+  const utils = trpc.useUtils();
+
+  // State for Phone/Direct Login
+  const [identifier, setIdentifier] = useState("");
+  const [loginRole, setLoginRole] = useState<"user" | "admin">("user");
+
+  // State for Registration
+  const [regName, setRegName] = useState("");
+  const [regPhone, setRegPhone] = useState("");
+  const [regGroup, setRegGroup] = useState("");
+  const [regRole, setRegRole] = useState<"user" | "admin">("user");
+
+  const demoLoginMutation = trpc.auth.demoLogin.useMutation({
+    onSuccess: (data) => {
+      toast.success(
+        lang === "en"
+          ? `Welcome back, ${data.user.name}!`
+          : `स्वागत है, ${data.user.name}!`
+      );
+      void utils.auth.me.invalidate();
+      void utils.digisakhi.progress.invalidate();
+      void utils.digisakhi.profile.invalidate();
+      close();
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to sign in");
+    },
+  });
+
+  const loginMutation = trpc.auth.login.useMutation({
+    onSuccess: (data) => {
+      toast.success(
+        lang === "en"
+          ? `Welcome back, ${data.user.name}!`
+          : `स्वागत है, ${data.user.name}!`
+      );
+      void utils.auth.me.invalidate();
+      void utils.digisakhi.progress.invalidate();
+      void utils.digisakhi.profile.invalidate();
+      close();
+    },
+    onError: (err) => {
+      toast.error(err.message || "Login failed");
+    },
+  });
+
+  const registerMutation = trpc.auth.register.useMutation({
+    onSuccess: (data) => {
+      toast.success(
+        lang === "en"
+          ? `Registration complete! Welcome, ${data.user.name}!`
+          : `पंजीकरण पूरा हुआ! स्वागत है, ${data.user.name}!`
+      );
+      void utils.auth.me.invalidate();
+      void utils.digisakhi.progress.invalidate();
+      void utils.digisakhi.profile.invalidate();
+      close();
+    },
+    onError: (err) => {
+      toast.error(err.message || "Registration failed");
+    },
+  });
+
+  const isPending =
+    demoLoginMutation.isPending ||
+    loginMutation.isPending ||
+    registerMutation.isPending;
+
+  const handlePhoneSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!identifier.trim()) {
+      toast.error(
+        lang === "en"
+          ? "Please enter your phone number or name"
+          : "कृपया मोबाइल नंबर या नाम दर्ज करें"
+      );
+      return;
+    }
+    loginMutation.mutate({
+      identifier: identifier.trim(),
+      role: loginRole,
+    });
+  };
+
+  const handleRegisterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!regName.trim() || regName.trim().length < 2) {
+      toast.error(
+        lang === "en"
+          ? "Please enter your full name"
+          : "कृपया अपना पूरा नाम दर्ज करें"
+      );
+      return;
+    }
+    if (!regPhone.trim() || regPhone.trim().length < 10) {
+      toast.error(
+        lang === "en"
+          ? "Please enter a valid 10-digit mobile number"
+          : "कृपया वैध 10 अंकों का मोबाइल नंबर दर्ज करें"
+      );
+      return;
+    }
+    registerMutation.mutate({
+      name: regName.trim(),
+      phone: regPhone.trim(),
+      shgGroup: regGroup.trim() || "Mahila Bachat Gat",
+      role: regRole,
+      preferredLanguage: lang,
+    });
+  };
+
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#15201d]/40 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-[#15201d]/50 p-4 backdrop-blur-sm">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="login-title"
-        className="relative max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-[28px] border border-[#e5dfd2] bg-[#fffdf8] p-7 shadow-2xl"
+        className="relative max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto rounded-[28px] border border-[#e5dfd2] bg-[#fffdf8] p-6 sm:p-8 shadow-2xl"
       >
         <button
           onClick={close}
@@ -614,36 +780,343 @@ function LoginModal({ close, lang }: { close: () => void; lang: "en" | "hi" }) {
           <X size={18} />
         </button>
         <Logo compact />
-        <p className="mt-7 text-xs font-semibold uppercase tracking-[.2em] text-[#0F766E]">
-          {lang === "en"
-            ? "A trusted space to learn"
-            : "सीखने के लिए भरोसेमंद जगह"}
-        </p>
-        <h2
-          id="login-title"
-          className="font-display mt-2 text-4xl leading-none"
-        >
-          {lang === "en" ? "Welcome back." : "आपका स्वागत है।"}
-        </h2>
-        <div className="mt-6 rounded-2xl bg-[#e1eee8] p-5 text-sm leading-relaxed text-[#47635a]">
-          {lang === "en"
-            ? "Sign in securely with your DigiSakhi account. Your learning progress and reports stay connected to your profile."
-            : "अपने DigiSakhi खाते से सुरक्षित साइन इन करें। आपकी सीखने की प्रगति और रिपोर्ट आपके प्रोफ़ाइल से जुड़ी रहेंगी।"}
+
+        <div className="mt-5">
+          <p className="text-xs font-semibold uppercase tracking-[.2em] text-[#0F766E]">
+            {lang === "en"
+              ? "Self-Hosted & Secure Access"
+              : "सुरक्षित एवं सीधा प्रवेश"}
+          </p>
+          <h2
+            id="login-title"
+            className="font-display mt-1 text-3xl sm:text-4xl leading-tight"
+          >
+            {lang === "en" ? "Sign in to DigiSakhi" : "डिजीसखी में प्रवेश करें"}
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {lang === "en"
+              ? "Access modules, test results, certificates, and community forum."
+              : "पाठ, परीक्षा परिणाम, प्रमाणपत्र और समुदाय तक पहुँचें।"}
+          </p>
         </div>
-        <Button
-          onClick={startLogin}
-          className="mt-6 h-12 w-full rounded-xl bg-[#0F766E] text-base hover:bg-[#0b625c]"
-        >
-          {lang === "en"
-            ? "Continue with secure sign in"
-            : "सुरक्षित साइन इन जारी रखें"}
-          <ArrowRight size={17} />
-        </Button>
-        <p className="mt-5 text-center text-xs text-muted-foreground">
-          {lang === "en"
-            ? "You will be taken to the secure Manus sign-in page."
-            : "आपको सुरक्षित Manus साइन-इन पेज पर ले जाया जाएगा।"}
-        </p>
+
+        {/* Tab Switcher */}
+        <div className="mt-5 grid grid-cols-3 gap-1 rounded-2xl bg-[#efebe2] p-1.5 text-xs font-bold">
+          <button
+            type="button"
+            onClick={() => setTab("demo")}
+            className={cn(
+              "rounded-xl py-2 transition",
+              tab === "demo"
+                ? "bg-white text-[#0F766E] shadow-sm"
+                : "text-[#626965] hover:text-[#18201e]"
+            )}
+          >
+            ⚡ {lang === "en" ? "1-Click Demo" : "त्वरित प्रवेश"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("phone")}
+            className={cn(
+              "rounded-xl py-2 transition",
+              tab === "phone"
+                ? "bg-white text-[#0F766E] shadow-sm"
+                : "text-[#626965] hover:text-[#18201e]"
+            )}
+          >
+            📱 {lang === "en" ? "Phone Login" : "मोबाइल लॉगिन"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("register")}
+            className={cn(
+              "rounded-xl py-2 transition",
+              tab === "register"
+                ? "bg-white text-[#0F766E] shadow-sm"
+                : "text-[#626965] hover:text-[#18201e]"
+            )}
+          >
+            ✍️ {lang === "en" ? "Register" : "पंजीकरण"}
+          </button>
+        </div>
+
+        {/* Tab 1: 1-Click Demo Access (Viva & Instant Test) */}
+        {tab === "demo" && (
+          <div className="mt-5 space-y-3.5">
+            <div className="rounded-xl bg-[#e1eee8]/60 p-3 text-xs text-[#285749] leading-relaxed">
+              💡{" "}
+              {lang === "en"
+                ? "One-click login for evaluation and instant access without passwords."
+                : "मूल्यांकन और त्वरित जाँच के लिए एक-क्लिक लॉगिन।"}
+            </div>
+
+            {/* Member Card */}
+            <div className="rounded-2xl border-2 border-[#0F766E]/20 bg-[#f4faf8] p-4 text-left transition hover:border-[#0F766E] hover:shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 place-items-center rounded-full bg-[#0F766E] text-white">
+                    <UserRound size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-[#164e63]">
+                      Radha Devi (राधा देवी)
+                    </h4>
+                    <p className="text-xs text-[#0F766E]">
+                      Gulab Mahila Bachat Gat
+                    </p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-[#ccfbf1] px-2.5 py-1 text-[11px] font-bold text-[#0F766E]">
+                  {lang === "en" ? "Member" : "सदस्य"}
+                </span>
+              </div>
+              <p className="mt-2.5 text-xs text-[#475569] leading-relaxed">
+                {lang === "en"
+                  ? "Standard Sakhi profile: take safety quizzes, track synced learning, and earn completion certificates."
+                  : "सखी सदस्य प्रोफाइल: क्विज़ हल करें, प्रगति सिंक करें और प्रमाणपत्र पाएँ।"}
+              </p>
+              <Button
+                disabled={isPending}
+                onClick={() => demoLoginMutation.mutate({ role: "user" })}
+                className="mt-3.5 h-11 w-full rounded-xl bg-[#0F766E] text-xs font-bold hover:bg-[#0b625c]"
+              >
+                {demoLoginMutation.isPending &&
+                demoLoginMutation.variables?.role === "user"
+                  ? lang === "en"
+                    ? "Signing in…"
+                    : "प्रवेश हो रहा है…"
+                  : lang === "en"
+                    ? "Sign in as Sakhi Member (Radha Devi)"
+                    : "सखी सदस्य के रूप में प्रवेश करें (राधा देवी)"}
+                <ArrowRight size={15} className="ml-1.5" />
+              </Button>
+            </div>
+
+            {/* Coordinator / Admin Card */}
+            <div className="rounded-2xl border-2 border-[#7C3AED]/20 bg-[#faf5ff] p-4 text-left transition hover:border-[#7C3AED] hover:shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 place-items-center rounded-full bg-[#7C3AED] text-white">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-[#581c87]">
+                      Pooja Sharma (पूजा शर्मा)
+                    </h4>
+                    <p className="text-xs text-[#7C3AED]">
+                      District Federation Coordinator
+                    </p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-[#f3e8ff] px-2.5 py-1 text-[11px] font-bold text-[#7C3AED]">
+                  {lang === "en" ? "Admin" : "एडमिन"}
+                </span>
+              </div>
+              <p className="mt-2.5 text-xs text-[#475569] leading-relaxed">
+                {lang === "en"
+                  ? "Coordinator access: broadcast urgent safety notices, manage learning modules, and review incident reports."
+                  : "समन्वयक अधिकार: तत्काल अलर्ट जारी करें, मॉड्यूल प्रबंधित करें और रिपोर्ट की समीक्षा करें।"}
+              </p>
+              <Button
+                disabled={isPending}
+                onClick={() => demoLoginMutation.mutate({ role: "admin" })}
+                className="mt-3.5 h-11 w-full rounded-xl bg-[#7C3AED] text-xs font-bold hover:bg-[#6d28d9]"
+              >
+                {demoLoginMutation.isPending &&
+                demoLoginMutation.variables?.role === "admin"
+                  ? lang === "en"
+                    ? "Signing in…"
+                    : "प्रवेश हो रहा है…"
+                  : lang === "en"
+                    ? "Sign in as Coordinator / Admin (Pooja Sharma)"
+                    : "समन्वयक / एडमिन के रूप में प्रवेश करें (पूजा शर्मा)"}
+                <ArrowRight size={15} className="ml-1.5" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 2: Mobile / Direct Login */}
+        {tab === "phone" && (
+          <form onSubmit={handlePhoneSubmit} className="mt-5 space-y-4">
+            <div>
+              <label className="text-xs font-bold text-[#343e3a]">
+                {lang === "en"
+                  ? "Mobile Number or Username"
+                  : "मोबाइल नंबर या नाम"}
+              </label>
+              <Input
+                type="text"
+                placeholder={
+                  lang === "en"
+                    ? "e.g. 9876543210 or your name"
+                    : "उदा. 9876543210 या आपका नाम"
+                }
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                className="mt-1.5 h-11 rounded-xl border-[#dcd5c9] bg-white text-sm"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-[#343e3a]">
+                {lang === "en" ? "Select Role" : "अपनी भूमिका चुनें"}
+              </label>
+              <div className="mt-1.5 grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setLoginRole("user")}
+                  className={cn(
+                    "rounded-xl border p-2.5 text-xs font-bold text-center transition",
+                    loginRole === "user"
+                      ? "border-[#0F766E] bg-[#f0f9f6] text-[#0F766E]"
+                      : "border-[#e0dad0] bg-white text-[#525d58] hover:bg-[#fbf9f4]"
+                  )}
+                >
+                  {lang === "en" ? "Sakhi Member" : "सखी सदस्य"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoginRole("admin")}
+                  className={cn(
+                    "rounded-xl border p-2.5 text-xs font-bold text-center transition",
+                    loginRole === "admin"
+                      ? "border-[#7C3AED] bg-[#faf5ff] text-[#7C3AED]"
+                      : "border-[#e0dad0] bg-white text-[#525d58] hover:bg-[#fbf9f4]"
+                  )}
+                >
+                  {lang === "en" ? "Coordinator / Admin" : "समन्वयक / एडमिन"}
+                </button>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="mt-2 h-11 w-full rounded-xl bg-[#0F766E] text-sm font-bold hover:bg-[#0b625c]"
+            >
+              {loginMutation.isPending
+                ? lang === "en"
+                  ? "Signing in…"
+                  : "साइन इन हो रहा है…"
+                : lang === "en"
+                  ? "Continue to DigiSakhi"
+                  : "डिजीसखी में प्रवेश करें"}
+              <ArrowRight size={16} className="ml-1.5" />
+            </Button>
+          </form>
+        )}
+
+        {/* Tab 3: New Sakhi Registration */}
+        {tab === "register" && (
+          <form onSubmit={handleRegisterSubmit} className="mt-5 space-y-3.5">
+            <div>
+              <label className="text-xs font-bold text-[#343e3a]">
+                {lang === "en" ? "Full Name" : "पूरा नाम"}
+              </label>
+              <Input
+                type="text"
+                placeholder={
+                  lang === "en" ? "e.g. Sunita Patil" : "उदा. सुनीता पाटिल"
+                }
+                value={regName}
+                onChange={(e) => setRegName(e.target.value)}
+                className="mt-1 h-10 rounded-xl border-[#dcd5c9] bg-white text-sm"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-[#343e3a]">
+                {lang === "en" ? "Mobile Number" : "मोबाइल नंबर"}
+              </label>
+              <Input
+                type="tel"
+                placeholder="10 digit phone number"
+                value={regPhone}
+                onChange={(e) => setRegPhone(e.target.value)}
+                className="mt-1 h-10 rounded-xl border-[#dcd5c9] bg-white text-sm"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-[#343e3a]">
+                {lang === "en"
+                  ? "Self Help Group (SHG) Name"
+                  : "स्वयं सहायता समूह का नाम"}
+              </label>
+              <Input
+                type="text"
+                placeholder={
+                  lang === "en"
+                    ? "e.g. Pragati Mahila Bachat Gat"
+                    : "उदा. प्रगति महिला बचत गट"
+                }
+                value={regGroup}
+                onChange={(e) => setRegGroup(e.target.value)}
+                className="mt-1 h-10 rounded-xl border-[#dcd5c9] bg-white text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-[#343e3a]">
+                {lang === "en" ? "Role" : "भूमिका"}
+              </label>
+              <div className="mt-1 grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setRegRole("user")}
+                  className={cn(
+                    "rounded-xl border p-2 text-xs font-bold text-center transition",
+                    regRole === "user"
+                      ? "border-[#0F766E] bg-[#f0f9f6] text-[#0F766E]"
+                      : "border-[#e0dad0] bg-white text-[#525d58]"
+                  )}
+                >
+                  {lang === "en" ? "Sakhi Member" : "सखी सदस्य"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRegRole("admin")}
+                  className={cn(
+                    "rounded-xl border p-2 text-xs font-bold text-center transition",
+                    regRole === "admin"
+                      ? "border-[#7C3AED] bg-[#faf5ff] text-[#7C3AED]"
+                      : "border-[#e0dad0] bg-white text-[#525d58]"
+                  )}
+                >
+                  {lang === "en" ? "SHG Coordinator" : "समन्वयक / एडमिन"}
+                </button>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="mt-3 h-11 w-full rounded-xl bg-[#0F766E] text-sm font-bold hover:bg-[#0b625c]"
+            >
+              {registerMutation.isPending
+                ? lang === "en"
+                  ? "Registering…"
+                  : "पंजीकरण हो रहा है…"
+                : lang === "en"
+                  ? "Register & Sign In"
+                  : "पंजीकरण करें और प्रवेश करें"}
+              <ArrowRight size={16} className="ml-1.5" />
+            </Button>
+          </form>
+        )}
+
+        <div className="mt-6 border-t border-[#ede7dd] pt-4 text-center">
+          <p className="text-[11px] text-muted-foreground flex items-center justify-center gap-1.5">
+            <ShieldCheck size={14} className="text-[#0F766E]" />
+            {lang === "en"
+              ? "Self-hosted secure login · TiDB Cloud database"
+              : "सुरक्षित सीधा लॉगिन · TiDB क्लाउड डेटाबेस"}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -3124,6 +3597,13 @@ export default function Home() {
     const preferredLanguage = profileQuery.data?.user.preferredLanguage;
     if (preferredLanguage) setLang(preferredLanguage);
   }, [profileQuery.data?.user.preferredLanguage]);
+
+  useEffect(() => {
+    const handleOpen = () => setLogin(true);
+    window.addEventListener("open-login-modal", handleOpen);
+    return () => window.removeEventListener("open-login-modal", handleOpen);
+  }, []);
+
   const selectedModule = modules.find(module => module.id === view);
   const isAdmin = auth.user?.role === "admin";
   return (
@@ -3131,8 +3611,11 @@ export default function Home() {
       <Topbar
         lang={lang}
         setLang={setLang}
+        user={auth.user}
         onLogin={() => setLogin(true)}
+        onLogout={auth.logout}
         onMenu={() => setMenu(!menu)}
+        onAdminOpen={() => setAdminOpen(true)}
       />
       {menu ? (
         <div className="border-b border-[#ded8cc] bg-[#fffdf8] px-5 py-4 lg:hidden">

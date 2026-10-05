@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   IncidentReport,
@@ -134,6 +134,133 @@ export async function getUserByOpenId(openId: string) {
     .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserByIdentifier(identifier: string) {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get user: database not available");
+    return undefined;
+  }
+
+  const clean = identifier.trim();
+  const result = await db
+    .select()
+    .from(users)
+    .where(
+      or(
+        eq(users.openId, clean),
+        eq(users.phone, clean),
+        eq(users.email, clean)
+      )
+    )
+    .limit(1);
+
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getOrCreateDemoUser(role: "user" | "admin") {
+  const openId = role === "admin" ? "demo_admin_pooja" : "demo_member_radha";
+  const db = await getDb();
+  const now = new Date();
+
+  const demoData =
+    role === "admin"
+      ? {
+          id: 2,
+          openId,
+          name: "Pooja Sharma (SHG Coordinator)",
+          email: "pooja.sharma@digisakhi.in",
+          phone: "9876543211",
+          role: "admin" as const,
+          shgGroup: "District Federation Coordinator",
+          preferredLanguage: "hi" as const,
+          loginMethod: "demo",
+          lastSignedIn: now,
+          createdAt: now,
+          updatedAt: now,
+        }
+      : {
+          id: 1,
+          openId,
+          name: "Radha Devi (राधा देवी)",
+          email: "radha.devi@digisakhi.in",
+          phone: "9876543210",
+          role: "user" as const,
+          shgGroup: "Gulab Mahila Bachat Gat",
+          preferredLanguage: "hi" as const,
+          loginMethod: "demo",
+          lastSignedIn: now,
+          createdAt: now,
+          updatedAt: now,
+        };
+
+  if (!db) {
+    return demoData;
+  }
+
+  const existing = await getUserByOpenId(openId);
+  if (existing) {
+    await upsertUser({
+      openId,
+      lastSignedIn: now,
+    });
+    return (await getUserByOpenId(openId)) || existing;
+  }
+
+  await upsertUser(demoData);
+  return (await getUserByOpenId(openId)) || demoData;
+}
+
+export async function authenticateOrRegisterUser(input: {
+  identifier: string;
+  name?: string;
+  role?: "user" | "admin";
+  shgGroup?: string;
+  preferredLanguage?: "en" | "hi";
+}) {
+  const cleanId = input.identifier.trim();
+  const db = await getDb();
+  const now = new Date();
+  const isPhone = /^[0-9+\s-]{8,15}$/.test(cleanId);
+  const isEmail = cleanId.includes("@");
+  const uniqueSuffix = Date.now().toString(36);
+  const openId = `user_${isPhone ? cleanId.replace(/\D/g, "") : isEmail ? cleanId.split("@")[0].replace(/[^a-zA-Z0-9]/g, "") : "sakhi"}_${uniqueSuffix}`.slice(0, 64);
+
+  const fallbackUser = {
+    id: 999,
+    openId,
+    name: input.name?.trim() || (isPhone ? `Sakhi ${cleanId.slice(-4)}` : cleanId),
+    phone: isPhone ? cleanId.replace(/\D/g, "") : null,
+    email: isEmail ? cleanId : null,
+    role: input.role ?? "user",
+    shgGroup: input.shgGroup || "Mahila Bachat Gat",
+    preferredLanguage: input.preferredLanguage || "hi",
+    loginMethod: "direct",
+    lastSignedIn: now,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  if (!db) {
+    return fallbackUser;
+  }
+
+  const existing = await getUserByIdentifier(cleanId);
+  if (existing) {
+    await upsertUser({
+      openId: existing.openId,
+      name: input.name ? input.name.trim() : existing.name,
+      role: input.role ?? existing.role,
+      shgGroup: input.shgGroup ?? existing.shgGroup,
+      preferredLanguage: input.preferredLanguage ?? existing.preferredLanguage,
+      lastSignedIn: now,
+    });
+    return (await getUserByOpenId(existing.openId)) || existing;
+  }
+
+  await upsertUser(fallbackUser);
+  return (await getUserByOpenId(openId)) || fallbackUser;
 }
 
 export async function updateUserProfile(
