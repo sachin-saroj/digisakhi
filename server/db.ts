@@ -1,54 +1,158 @@
+import Database from "better-sqlite3";
 import { and, desc, eq, or, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import path from "node:path";
 import {
+  Announcement,
+  ForumPost,
+  ForumReply,
   IncidentReport,
+  InsertAnnouncement,
+  InsertForumPost,
+  InsertForumReply,
   InsertIncidentReport,
   InsertLearningProgress,
   InsertModule,
   InsertQuizAttempt,
-  InsertAnnouncement,
-  InsertForumPost,
-  InsertForumReply,
   InsertUser,
   LearningProgress,
   Module,
   QuizAttempt,
-  Announcement,
-  ForumPost,
-  ForumReply,
+  User,
   announcements,
+  forumPosts,
+  forumReplies,
   incidentReports,
   learningProgress,
   modules,
   quizAttempts,
-  forumPosts,
-  forumReplies,
   users,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
-let _db: ReturnType<typeof drizzle> | null = null;
+const isTest = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
+const defaultDb = isTest
+  ? path.resolve(process.cwd(), `test_${process.pid}.db`)
+  : path.resolve(process.cwd(), "digisakhi.db");
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
+const dbPath = process.env.DATABASE_URL?.replace(/^sqlite:\/\//, "") || defaultDb;
+
+const sqlite = new Database(dbPath, { timeout: 10000 });
+
+try {
+  sqlite.pragma("journal_mode = WAL");
+  sqlite.pragma("busy_timeout = 5000");
+} catch {
+  // WAL or busy_timeout may already be set by another process
+}
+
+// Auto-initialize SQLite schema if missing
+const tableExists = sqlite
+  .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
+  .get();
+
+if (!tableExists) {
+  sqlite.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      openId TEXT NOT NULL,
+      name TEXT,
+      email TEXT,
+      loginMethod TEXT,
+      role TEXT NOT NULL DEFAULT 'user',
+      shgGroup TEXT,
+      phone TEXT,
+      preferredLanguage TEXT NOT NULL DEFAULT 'en',
+      createdAt INTEGER NOT NULL,
+      updatedAt INTEGER NOT NULL,
+      lastSignedIn INTEGER NOT NULL
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS users_openId_unique ON users (openId);
+
+    CREATE TABLE IF NOT EXISTS modules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      slug TEXT NOT NULL,
+      title TEXT NOT NULL,
+      titleHi TEXT,
+      category TEXT NOT NULL,
+      description TEXT NOT NULL,
+      descriptionHi TEXT,
+      imageUrl TEXT,
+      videoUrl TEXT,
+      quizData TEXT,
+      published INTEGER NOT NULL DEFAULT 1,
+      archived INTEGER NOT NULL DEFAULT 0,
+      createdBy INTEGER,
+      createdAt INTEGER NOT NULL,
+      updatedAt INTEGER NOT NULL
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS modules_slug_unique ON modules (slug);
+
+    CREATE TABLE IF NOT EXISTS announcements (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      adminId INTEGER NOT NULL,
+      message TEXT NOT NULL,
+      urgent INTEGER NOT NULL DEFAULT 0,
+      createdAt INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS incident_reports (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      userId INTEGER,
+      description TEXT NOT NULL,
+      category TEXT NOT NULL,
+      anonymous INTEGER NOT NULL DEFAULT 1,
+      status TEXT NOT NULL DEFAULT 'New',
+      createdAt INTEGER NOT NULL,
+      updatedAt INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS learning_progress (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      userId INTEGER NOT NULL,
+      moduleId TEXT NOT NULL,
+      quizScore INTEGER NOT NULL DEFAULT 0,
+      questionCount INTEGER NOT NULL DEFAULT 0,
+      completedAt INTEGER NOT NULL,
+      updatedAt INTEGER NOT NULL
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS learning_progress_user_module_unique ON learning_progress (userId, moduleId);
+
+    CREATE TABLE IF NOT EXISTS quiz_attempts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      userId INTEGER NOT NULL,
+      moduleId TEXT NOT NULL,
+      quizScore INTEGER NOT NULL,
+      questionCount INTEGER NOT NULL,
+      answers TEXT NOT NULL,
+      completedAt INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS forum_posts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      userId INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      anonymous INTEGER NOT NULL DEFAULT 0,
+      pinned INTEGER NOT NULL DEFAULT 0,
+      createdAt INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS forum_replies (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      postId INTEGER NOT NULL,
+      userId INTEGER NOT NULL,
+      body TEXT NOT NULL,
+      anonymous INTEGER NOT NULL DEFAULT 0,
+      createdAt INTEGER NOT NULL
+    );
+  `);
+}
+
+export const db = drizzle(sqlite);
+
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
-    try {
-      const isCloud =
-        process.env.DATABASE_URL.includes("tidbcloud") ||
-        process.env.DATABASE_URL.includes("aws") ||
-        process.env.DATABASE_URL.includes("ssl");
-      _db = drizzle({
-        connection: {
-          uri: process.env.DATABASE_URL,
-          ssl: isCloud ? { rejectUnauthorized: true } : undefined,
-        },
-      });
-    } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
-      _db = null;
-    }
-  }
-  return _db;
+  return db;
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
@@ -56,93 +160,74 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     throw new Error("User openId is required for upsert");
   }
 
-  const db = await getDb();
-  if (!db) {
-    console.warn("[Database] Cannot upsert user: database not available");
-    return;
+  const values: InsertUser = {
+    openId: user.openId,
+  };
+  const updateSet: Record<string, unknown> = {};
+
+  const textFields = [
+    "name",
+    "email",
+    "loginMethod",
+    "shgGroup",
+    "phone",
+  ] as const;
+  type TextField = (typeof textFields)[number];
+
+  const assignNullable = (field: TextField) => {
+    const value = user[field];
+    if (value === undefined) return;
+    const normalized = value ?? null;
+    values[field] = normalized;
+    updateSet[field] = normalized;
+  };
+
+  textFields.forEach(assignNullable);
+
+  if (user.lastSignedIn !== undefined) {
+    values.lastSignedIn = user.lastSignedIn;
+    updateSet.lastSignedIn = user.lastSignedIn;
+  }
+  if (user.role !== undefined) {
+    values.role = user.role;
+    updateSet.role = user.role;
+  } else if (user.openId === ENV.ownerOpenId) {
+    values.role = "admin";
+    updateSet.role = "admin";
+  }
+  if (user.preferredLanguage !== undefined) {
+    values.preferredLanguage = user.preferredLanguage;
+    updateSet.preferredLanguage = user.preferredLanguage;
   }
 
-  try {
-    const values: InsertUser = {
-      openId: user.openId,
-    };
-    const updateSet: Record<string, unknown> = {};
+  if (!values.lastSignedIn) {
+    values.lastSignedIn = new Date();
+  }
 
-    const textFields = [
-      "name",
-      "email",
-      "loginMethod",
-      "shgGroup",
-      "phone",
-    ] as const;
-    type TextField = (typeof textFields)[number];
+  if (Object.keys(updateSet).length === 0) {
+    updateSet.lastSignedIn = new Date();
+  }
 
-    const assignNullable = (field: TextField) => {
-      const value = user[field];
-      if (value === undefined) return;
-      const normalized = value ?? null;
-      values[field] = normalized;
-      updateSet[field] = normalized;
-    };
-
-    textFields.forEach(assignNullable);
-
-    if (user.lastSignedIn !== undefined) {
-      values.lastSignedIn = user.lastSignedIn;
-      updateSet.lastSignedIn = user.lastSignedIn;
-    }
-    if (user.role !== undefined) {
-      values.role = user.role;
-      updateSet.role = user.role;
-    } else if (user.openId === ENV.ownerOpenId) {
-      values.role = "admin";
-      updateSet.role = "admin";
-    }
-    if (user.preferredLanguage !== undefined) {
-      values.preferredLanguage = user.preferredLanguage;
-      updateSet.preferredLanguage = user.preferredLanguage;
-    }
-
-    if (!values.lastSignedIn) {
-      values.lastSignedIn = new Date();
-    }
-
-    if (Object.keys(updateSet).length === 0) {
-      updateSet.lastSignedIn = new Date();
-    }
-
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
+  await db
+    .insert(users)
+    .values(values)
+    .onConflictDoUpdate({
+      target: users.openId,
       set: updateSet,
     });
-  } catch (error) {
-    console.error("[Database] Failed to upsert user:", error);
-    throw error;
-  }
 }
 
-export async function getUserByOpenId(openId: string) {
-  const db = await getDb();
-  if (!db) {
-    console.warn("[Database] Cannot get user: database not available");
-    return undefined;
-  }
-
+export async function getUserByOpenId(openId: string): Promise<User | undefined> {
   const result = await db
     .select()
     .from(users)
     .where(eq(users.openId, openId))
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result[0];
 }
 
-export async function getUserByIdentifier(identifier: string) {
-  const db = await getDb();
-  if (!db) {
-    console.warn("[Database] Cannot get user: database not available");
-    return undefined;
-  }
-
+export async function getUserByIdentifier(identifier: string): Promise<User | undefined> {
   const clean = identifier.trim();
   const result = await db
     .select()
@@ -156,48 +241,41 @@ export async function getUserByIdentifier(identifier: string) {
     )
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result[0];
 }
 
-export async function getOrCreateDemoUser(role: "user" | "admin") {
+export async function getOrCreateDemoUser(role: "user" | "admin"): Promise<User> {
   const openId = role === "admin" ? "demo_admin_pooja" : "demo_member_radha";
-  const db = await getDb();
   const now = new Date();
 
-  const demoData =
+  const demoData: InsertUser =
     role === "admin"
       ? {
-          id: 2,
           openId,
           name: "Pooja Sharma (SHG Coordinator)",
           email: "pooja.sharma@digisakhi.in",
           phone: "9876543211",
-          role: "admin" as const,
+          role: "admin",
           shgGroup: "District Federation Coordinator",
-          preferredLanguage: "hi" as const,
+          preferredLanguage: "hi",
           loginMethod: "demo",
           lastSignedIn: now,
           createdAt: now,
           updatedAt: now,
         }
       : {
-          id: 1,
           openId,
           name: "Radha Devi (राधा देवी)",
           email: "radha.devi@digisakhi.in",
           phone: "9876543210",
-          role: "user" as const,
+          role: "user",
           shgGroup: "Gulab Mahila Bachat Gat",
-          preferredLanguage: "hi" as const,
+          preferredLanguage: "hi",
           loginMethod: "demo",
           lastSignedIn: now,
           createdAt: now,
           updatedAt: now,
         };
-
-  if (!db) {
-    return demoData;
-  }
 
   const existing = await getUserByOpenId(openId);
   if (existing) {
@@ -209,7 +287,9 @@ export async function getOrCreateDemoUser(role: "user" | "admin") {
   }
 
   await upsertUser(demoData);
-  return (await getUserByOpenId(openId)) || demoData;
+  const created = await getUserByOpenId(openId);
+  if (!created) throw new Error("Demo user initialization failed");
+  return created;
 }
 
 export async function authenticateOrRegisterUser(input: {
@@ -218,33 +298,13 @@ export async function authenticateOrRegisterUser(input: {
   role?: "user" | "admin";
   shgGroup?: string;
   preferredLanguage?: "en" | "hi";
-}) {
+}): Promise<User> {
   const cleanId = input.identifier.trim();
-  const db = await getDb();
   const now = new Date();
   const isPhone = /^[0-9+\s-]{8,15}$/.test(cleanId);
   const isEmail = cleanId.includes("@");
   const uniqueSuffix = Date.now().toString(36);
   const openId = `user_${isPhone ? cleanId.replace(/\D/g, "") : isEmail ? cleanId.split("@")[0].replace(/[^a-zA-Z0-9]/g, "") : "sakhi"}_${uniqueSuffix}`.slice(0, 64);
-
-  const fallbackUser = {
-    id: 999,
-    openId,
-    name: input.name?.trim() || (isPhone ? `Sakhi ${cleanId.slice(-4)}` : cleanId),
-    phone: isPhone ? cleanId.replace(/\D/g, "") : null,
-    email: isEmail ? cleanId : null,
-    role: input.role ?? "user",
-    shgGroup: input.shgGroup || "Mahila Bachat Gat",
-    preferredLanguage: input.preferredLanguage || "hi",
-    loginMethod: "direct",
-    lastSignedIn: now,
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  if (!db) {
-    return fallbackUser;
-  }
 
   const existing = await getUserByIdentifier(cleanId);
   if (existing) {
@@ -259,55 +319,50 @@ export async function authenticateOrRegisterUser(input: {
     return (await getUserByOpenId(existing.openId)) || existing;
   }
 
-  await upsertUser(fallbackUser);
-  return (await getUserByOpenId(openId)) || fallbackUser;
+  const newUser: InsertUser = {
+    openId,
+    name: input.name?.trim() || (isPhone ? `Sakhi ${cleanId.slice(-4)}` : cleanId),
+    phone: isPhone ? cleanId.replace(/\D/g, "") : null,
+    email: isEmail ? cleanId : null,
+    role: input.role ?? "user",
+    shgGroup: input.shgGroup || "Mahila Bachat Gat",
+    preferredLanguage: input.preferredLanguage || "hi",
+    loginMethod: "direct",
+    lastSignedIn: now,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  await upsertUser(newUser);
+  const created = await getUserByOpenId(openId);
+  if (!created) throw new Error("Failed to register user");
+  return created;
 }
 
 export async function updateUserProfile(
   userId: number,
   input: { shgGroup: string; phone: string; preferredLanguage: "en" | "hi" }
-) {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  await db.update(users).set(input).where(eq(users.id, userId));
-  const result = await db
-    .select()
-    .from(users)
+): Promise<User> {
+  const [result] = await db
+    .update(users)
+    .set(input)
     .where(eq(users.id, userId))
-    .limit(1);
-  if (!result[0]) throw new Error("Profile was not found");
-  return result[0];
+    .returning();
+  if (!result) throw new Error("Profile was not found");
+  return result;
 }
 
 export async function createIncidentReport(
   input: InsertIncidentReport
 ): Promise<IncidentReport> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  const result = await db.insert(incidentReports).values(input);
-  const id = Number(result[0].insertId);
-  const created = await db
-    .select()
-    .from(incidentReports)
-    .where(eq(incidentReports.id, id))
-    .limit(1);
-  if (!created[0]) throw new Error("Incident report was not created");
-  return created[0];
+  const [created] = await db.insert(incidentReports).values(input).returning();
+  if (!created) throw new Error("Incident report was not created");
+  return created;
 }
 
-export async function getIncidentReportsForAdmin() {
-  const db = await getDb();
-  if (!db) return [];
+export async function getIncidentReportsForAdmin(): Promise<IncidentReport[]> {
   return db
-    .select({
-      id: incidentReports.id,
-      description: incidentReports.description,
-      category: incidentReports.category,
-      anonymous: incidentReports.anonymous,
-      status: incidentReports.status,
-      createdAt: incidentReports.createdAt,
-      updatedAt: incidentReports.updatedAt,
-    })
+    .select()
     .from(incidentReports)
     .orderBy(desc(incidentReports.createdAt))
     .limit(25);
@@ -316,35 +371,19 @@ export async function getIncidentReportsForAdmin() {
 export async function updateIncidentStatus(
   reportId: number,
   status: "New" | "In Review" | "Resolved"
-) {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  await db
+): Promise<IncidentReport> {
+  const [result] = await db
     .update(incidentReports)
     .set({ status, updatedAt: new Date() })
-    .where(eq(incidentReports.id, reportId));
-  const result = await db
-    .select({
-      id: incidentReports.id,
-      description: incidentReports.description,
-      category: incidentReports.category,
-      anonymous: incidentReports.anonymous,
-      status: incidentReports.status,
-      createdAt: incidentReports.createdAt,
-      updatedAt: incidentReports.updatedAt,
-    })
-    .from(incidentReports)
     .where(eq(incidentReports.id, reportId))
-    .limit(1);
-  if (!result[0]) throw new Error("Incident report was not found");
-  return result[0];
+    .returning();
+  if (!result) throw new Error("Incident report was not found");
+  return result;
 }
 
 export async function getLearningProgress(
   userId: number
 ): Promise<LearningProgress[]> {
-  const db = await getDb();
-  if (!db) return [];
   return db
     .select()
     .from(learningProgress)
@@ -355,36 +394,24 @@ export async function getLearningProgress(
 export async function upsertLearningProgress(
   input: InsertLearningProgress
 ): Promise<LearningProgress> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  await db
+  const [result] = await db
     .insert(learningProgress)
     .values(input)
-    .onDuplicateKeyUpdate({
+    .onConflictDoUpdate({
+      target: [learningProgress.userId, learningProgress.moduleId],
       set: {
         quizScore: input.quizScore,
         questionCount: input.questionCount,
         completedAt: input.completedAt ?? new Date(),
         updatedAt: new Date(),
       },
-    });
-  const result = await db
-    .select()
-    .from(learningProgress)
-    .where(
-      and(
-        eq(learningProgress.userId, input.userId),
-        eq(learningProgress.moduleId, input.moduleId)
-      )
-    )
-    .limit(1);
-  if (!result[0]) throw new Error("Learning progress was not saved");
-  return result[0];
+    })
+    .returning();
+  if (!result) throw new Error("Learning progress was not saved");
+  return result;
 }
 
 export async function getPublishedModules(): Promise<Module[]> {
-  const db = await getDb();
-  if (!db) return [];
   return db
     .select()
     .from(modules)
@@ -395,8 +422,6 @@ export async function getPublishedModules(): Promise<Module[]> {
 export async function getPublishedModuleBySlug(
   slug: string
 ): Promise<Module | undefined> {
-  const db = await getDb();
-  if (!db) return undefined;
   const result = await db
     .select()
     .from(modules)
@@ -414,20 +439,23 @@ export async function getPublishedModuleBySlug(
 export async function ensureDefaultModules(
   seed: InsertModule[]
 ): Promise<Module[]> {
-  const db = await getDb();
-  if (!db) return [];
   const existing = await db
     .select()
     .from(modules)
     .where(and(eq(modules.published, 1), eq(modules.archived, 0)))
     .orderBy(modules.id);
   if (existing.length > 0) return existing;
+
   for (const module of seed) {
     await db
       .insert(modules)
       .values(module)
-      .onDuplicateKeyUpdate({ set: { published: 1, archived: 0 } });
+      .onConflictDoUpdate({
+        target: modules.slug,
+        set: { published: 1, archived: 0 },
+      });
   }
+
   return db
     .select()
     .from(modules)
@@ -436,21 +464,12 @@ export async function ensureDefaultModules(
 }
 
 export async function createModule(input: InsertModule): Promise<Module> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  const result = await db.insert(modules).values(input);
-  const created = await db
-    .select()
-    .from(modules)
-    .where(eq(modules.id, Number(result[0].insertId)))
-    .limit(1);
-  if (!created[0]) throw new Error("Module was not created");
-  return created[0];
+  const [created] = await db.insert(modules).values(input).returning();
+  if (!created) throw new Error("Module was not created");
+  return created;
 }
 
 export async function getModulesForAdmin(): Promise<Module[]> {
-  const db = await getDb();
-  if (!db) return [];
   return db.select().from(modules).orderBy(modules.id);
 }
 
@@ -458,19 +477,13 @@ export async function updateModule(
   moduleId: number,
   input: Partial<InsertModule>
 ): Promise<Module> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  await db
+  const [result] = await db
     .update(modules)
     .set({ ...input, updatedAt: new Date() })
-    .where(eq(modules.id, moduleId));
-  const result = await db
-    .select()
-    .from(modules)
     .where(eq(modules.id, moduleId))
-    .limit(1);
-  if (!result[0]) throw new Error("Module was not found");
-  return result[0];
+    .returning();
+  if (!result) throw new Error("Module was not found");
+  return result;
 }
 
 export async function setModuleLifecycle(
@@ -483,42 +496,24 @@ export async function setModuleLifecycle(
 export async function createAnnouncement(
   input: InsertAnnouncement
 ): Promise<Announcement> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  const result = await db.insert(announcements).values(input);
-  const created = await db
-    .select()
-    .from(announcements)
-    .where(eq(announcements.id, Number(result[0].insertId)))
-    .limit(1);
-  if (!created[0]) throw new Error("Announcement was not created");
-  return created[0];
+  const [created] = await db.insert(announcements).values(input).returning();
+  if (!created) throw new Error("Announcement was not created");
+  return created;
 }
 
 export async function getAnnouncements(): Promise<Announcement[]> {
-  const db = await getDb();
-  if (!db) return [];
   return db.select().from(announcements).orderBy(desc(announcements.createdAt));
 }
 
 export async function createQuizAttempt(
   input: InsertQuizAttempt
 ): Promise<QuizAttempt> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  const result = await db.insert(quizAttempts).values(input);
-  const created = await db
-    .select()
-    .from(quizAttempts)
-    .where(eq(quizAttempts.id, Number(result[0].insertId)))
-    .limit(1);
-  if (!created[0]) throw new Error("Quiz attempt was not created");
-  return created[0];
+  const [created] = await db.insert(quizAttempts).values(input).returning();
+  if (!created) throw new Error("Quiz attempt was not created");
+  return created;
 }
 
 export async function getQuizAttempts(userId: number): Promise<QuizAttempt[]> {
-  const db = await getDb();
-  if (!db) return [];
   return db
     .select()
     .from(quizAttempts)
@@ -529,21 +524,12 @@ export async function getQuizAttempts(userId: number): Promise<QuizAttempt[]> {
 export async function createForumPost(
   input: InsertForumPost
 ): Promise<ForumPost> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  const result = await db.insert(forumPosts).values(input);
-  const created = await db
-    .select()
-    .from(forumPosts)
-    .where(eq(forumPosts.id, Number(result[0].insertId)))
-    .limit(1);
-  if (!created[0]) throw new Error("Forum post was not created");
-  return created[0];
+  const [created] = await db.insert(forumPosts).values(input).returning();
+  if (!created) throw new Error("Forum post was not created");
+  return created;
 }
 
 export async function getForumPosts(): Promise<ForumPost[]> {
-  const db = await getDb();
-  if (!db) return [];
   return db
     .select()
     .from(forumPosts)
@@ -553,21 +539,12 @@ export async function getForumPosts(): Promise<ForumPost[]> {
 export async function createForumReply(
   input: InsertForumReply
 ): Promise<ForumReply> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  const result = await db.insert(forumReplies).values(input);
-  const created = await db
-    .select()
-    .from(forumReplies)
-    .where(eq(forumReplies.id, Number(result[0].insertId)))
-    .limit(1);
-  if (!created[0]) throw new Error("Forum reply was not created");
-  return created[0];
+  const [created] = await db.insert(forumReplies).values(input).returning();
+  if (!created) throw new Error("Forum reply was not created");
+  return created;
 }
 
 export async function getForumReplies(postId: number): Promise<ForumReply[]> {
-  const db = await getDb();
-  if (!db) return [];
   return db
     .select()
     .from(forumReplies)
@@ -579,32 +556,16 @@ export async function setForumPostPinned(
   postId: number,
   pinned: boolean
 ): Promise<ForumPost> {
-  const db = await getDb();
-  if (!db) throw new Error("Database is not available");
-  await db
+  const [result] = await db
     .update(forumPosts)
     .set({ pinned: pinned ? 1 : 0 })
-    .where(eq(forumPosts.id, postId));
-  const result = await db
-    .select()
-    .from(forumPosts)
     .where(eq(forumPosts.id, postId))
-    .limit(1);
-  if (!result[0]) throw new Error("Forum post was not found");
-  return result[0];
+    .returning();
+  if (!result) throw new Error("Forum post was not found");
+  return result;
 }
 
 export async function getAdminStats() {
-  const db = await getDb();
-  if (!db)
-    return {
-      members: 0,
-      completedModules: 0,
-      averageScore: 0,
-      newReports: 0,
-      attempts: 0,
-      moduleAnalytics: [],
-    };
   const [
     members,
     completedModules,
@@ -617,7 +578,7 @@ export async function getAdminStats() {
     db.select({ value: sql<number>`count(*)` }).from(learningProgress),
     db
       .select({
-        value: sql<number>`coalesce(avg(${quizAttempts.quizScore} / nullif(${quizAttempts.questionCount}, 0) * 100), 0)`,
+        value: sql<number>`coalesce(avg(${quizAttempts.quizScore} * 100.0 / nullif(${quizAttempts.questionCount}, 0)), 0)`,
       })
       .from(quizAttempts),
     db
@@ -630,11 +591,12 @@ export async function getAdminStats() {
         moduleId: quizAttempts.moduleId,
         attempts: sql<number>`count(*)`,
         completions: sql<number>`count(distinct ${quizAttempts.userId})`,
-        averageScore: sql<number>`coalesce(avg(${quizAttempts.quizScore} / nullif(${quizAttempts.questionCount}, 0) * 100), 0)`,
+        averageScore: sql<number>`coalesce(avg(${quizAttempts.quizScore} * 100.0 / nullif(${quizAttempts.questionCount}, 0)), 0)`,
       })
       .from(quizAttempts)
       .groupBy(quizAttempts.moduleId),
   ]);
+
   return {
     members: Number(members[0]?.value ?? 0),
     completedModules: Number(completedModules[0]?.value ?? 0),

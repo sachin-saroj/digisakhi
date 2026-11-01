@@ -18,7 +18,7 @@ The platform covers safe browsing, social-media privacy, scams and phishing, UPI
 
 ## Technology stack
 
-DigiSakhi uses a React and Vite client with Tailwind CSS, accessible UI primitives and responsive mobile-first layout patterns. The application scaffold uses an Express server, tRPC contracts, TypeScript, Drizzle ORM and a managed SQL database. Authentication is provided through the project’s protected session flow. The interface uses a local rule-based heuristic for the scam checker so that pasted messages are not transmitted to a paid external AI service. English and Hindi are treated as first-class interface languages.
+DigiSakhi uses a React and Vite client with Tailwind CSS, accessible UI primitives and responsive mobile-first layout patterns. The application scaffold uses an Express server, tRPC contracts, TypeScript, Drizzle ORM and a lightweight SQLite database. Authentication is provided through the project’s protected session flow. The interface uses a local rule-based heuristic for the scam checker so that pasted messages are not transmitted to a paid external AI service. English and Hindi are treated as first-class interface languages.
 
 ## Social impact
 

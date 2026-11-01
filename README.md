@@ -3,7 +3,7 @@
 [![Live Production](https://img.shields.io/badge/Live-digisakhi--32j7.onrender.com-brightgreen?style=for-the-badge&logo=render)](https://digisakhi-32j7.onrender.com)
 [![Build Status](https://img.shields.io/badge/Build-Passing-success?style=for-the-badge&logo=github)](https://github.com/sachin-saroj/digisakhi)
 [![Stack](https://img.shields.io/badge/Stack-React%2019%20%7C%20Node.js%2024%20%7C%20tRPC-blue?style=for-the-badge)](https://github.com/sachin-saroj/digisakhi)
-[![Database](https://img.shields.io/badge/Database-TiDB%20Cloud%20MySQL-orange?style=for-the-badge&logo=mysql)](https://tidbcloud.com)
+[![Database](https://img.shields.io/badge/Database-SQLite%203-blue?style=for-the-badge&logo=sqlite)](https://sqlite.org)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
 
 > **Live Application URL:** **[https://digisakhi-32j7.onrender.com](https://digisakhi-32j7.onrender.com)**  
@@ -70,9 +70,9 @@ flowchart TD
         StaticServer["Vite Static Production Assets (/dist/public)"]
     end
 
-    subgraph Database["Cloud Database Layer (AWS Tokyo)"]
-        Drizzle["Drizzle ORM (Type-Safe Schema & Migrations)"]
-        TiDB["TiDB Serverless Distributed MySQL"]
+    subgraph Database["Database Layer (Local SQLite)"]
+        Drizzle["Drizzle ORM (Type-Safe Schema & Queries)"]
+        SQLite["SQLite File (digisakhi.db)"]
     end
 
     UI --> Lang
@@ -83,7 +83,7 @@ flowchart TD
     ExpressApp --> AuthMiddleware
     AuthMiddleware --> tRPCRouter
     tRPCRouter --> Drizzle
-    Drizzle --> TiDB
+    Drizzle --> SQLite
     ExpressApp --> StaticServer
 ```
 
@@ -94,10 +94,10 @@ flowchart TD
    * Credentials and tokens are verified through the tRPC backend; authenticated sessions are established via secure cookies/JWT.
 2. **Learning & Knowledge Evaluation:**
    * Member opens a module. Content is fetched from the `modules` table.
-   * Upon completing the module quiz, answers are evaluated and pushed via `digisakhi.saveQuizAttempt` to both `quiz_attempts` (full audit log) and `learning_progress` (unique per-user module summary).
+   * Upon completing the module quiz, answers are evaluated and pushed via `digisakhi.completeModule` to both `quiz_attempts` (full audit log) and `learning_progress` (unique per-user module summary).
 3. **Incident Reporting Pipeline:**
    * A member submits details of a suspicious transaction or message.
-   * The mutation `digisakhi.submitIncident` writes to the `incident_reports` table with status `New`.
+   * The mutation `digisakhi.reportIncident` writes to the `incident_reports` table with status `New`.
    * Admins view and triage incidents on the coordinator dashboard, updating status to `In Review` or `Resolved`.
 4. **Community Collaboration:**
    * Members publish questions or warnings to `forum_posts`.
@@ -105,9 +105,9 @@ flowchart TD
 
 ---
 
-## 🗄️ Database Architecture (TiDB Cloud MySQL)
+## 🗄️ Database Architecture (SQLite via Drizzle ORM)
 
-The database runs on **TiDB Cloud Serverless** (MySQL 8.0 wire-compatible, hosted in AWS Tokyo region) and is managed via **Drizzle ORM**. It features 8 relational tables:
+The database runs on **SQLite** (file-based `digisakhi.db`, zero external cloud dependencies, 100% offline-ready) managed via **Drizzle ORM**. It features 8 relational tables:
 
 ```mermaid
 erDiagram
@@ -235,12 +235,12 @@ erDiagram
 * **Authentication:** JWT with HTTP-only cookie support & role validation middleware
 
 ### Database & Persistence
-* **Database:** TiDB Serverless (Cloud MySQL-compatible, distributed architecture)
-* **ORM:** Drizzle ORM 0.44 with Drizzle Kit 0.31
-* **Connection Pooling:** TLS/SSL-enabled MySQL2 pool with certificate verification
+* **Database:** SQLite 3 (Standalone file `digisakhi.db`, zero external cloud dependencies)
+* **ORM:** Drizzle ORM (Type-Safe SQLite adapter with Drizzle Kit)
+* **Storage Engine:** WAL (Write-Ahead Logging) mode via `better-sqlite3`
 
 ### Infrastructure & Deployment
-* **Hosting:** Render.com (Native Node.js Web Service)
+* **Hosting:** Standalone Node.js Web Service
 * **Live Domain:** `https://digisakhi-32j7.onrender.com`
 * **Version Control:** Git, GitHub (`sachin-saroj/digisakhi`)
 
@@ -265,31 +265,16 @@ erDiagram
    pnpm install
    ```
 
-3. **Configure Environment Variables:**
-   Create a `.env` file in the project root:
-   ```env
-   # Database connection (TiDB Cloud / MySQL)
-   DATABASE_URL="mysql://<user>:<password>@<host>:4000/<database>"
+3. **Database Setup:**
+   No setup needed! The database automatically creates `digisakhi.db` in the root folder with all 8 tables initialized on first launch.
 
-   # Authentication Secrets
-   JWT_SECRET="your_secure_random_jwt_secret"
-   NODE_ENV="development"
-   PORT=3000
-   ```
-
-4. **Synchronize Database Schema:**
-   Apply Drizzle schema migrations to your database:
-   ```bash
-   pnpm db:push
-   ```
-
-5. **Start Local Development Server:**
+4. **Start Local Development Server:**
    ```bash
    pnpm dev
    ```
    Open `http://localhost:3000` in your browser.
 
-6. **Launch Drizzle Studio (Database GUI):**
+5. **Launch Drizzle Studio (Database GUI Viewer):**
    ```bash
    pnpm drizzle-kit studio
    ```
