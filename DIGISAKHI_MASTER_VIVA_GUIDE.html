@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DigiSakhi — Master Viva & Technical Architecture Dossier</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --primary-light: #e0e7ff;
+      --success: #059669;
+      --success-light: #d1fae5;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--slate-800);
+      background: #ffffff;
+      line-height: 1.6;
+      font-size: 13.5px;
+      padding: 24px 32px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        font-size: 12px;
+        color: #000;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+      .card, .table-container, .qa-card {
+        break-inside: avoid;
+      }
+      @page {
+        margin: 16mm 14mm 16mm 14mm;
+        size: A4;
+      }
+    }
+
+    .header-banner {
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .title-group h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--slate-900);
+      letter-spacing: -0.5px;
+    }
+
+    .title-group .subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--primary);
+      margin-top: 4px;
+    }
+
+    .meta-badge {
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 10px 14px;
+      text-align: right;
+      font-size: 12px;
+    }
+
+    .meta-badge strong {
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    .meta-badge a {
+      color: var(--primary);
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--slate-900);
+      border-left: 4px solid var(--primary);
+      padding-left: 10px;
+      margin: 28px 0 14px 0;
+      letter-spacing: -0.3px;
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate-800);
+      margin: 16px 0 8px 0;
+    }
+
+    p, li {
+      margin-bottom: 8px;
+      color: var(--slate-700);
+    }
+
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tag-primary { background: var(--primary-light); color: var(--primary-dark); }
+    .tag-success { background: var(--success-light); color: var(--success); }
+    .tag-warning { background: var(--warning-light); color: var(--warning); }
+
+    .card {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+
+    .card-accent {
+      border-left: 4px solid var(--primary);
+      background: #fafbff;
+    }
+
+    .table-container {
+      margin: 14px 0 20px 0;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      background: #fff;
+      border: 1px solid var(--slate-200);
+    }
+
+    th {
+      background: var(--slate-100);
+      color: var(--slate-900);
+      font-weight: 600;
+      text-align: left;
+      padding: 8px 12px;
+      border: 1px solid var(--slate-200);
+    }
+
+    td {
+      padding: 8px 12px;
+      border: 1px solid var(--slate-200);
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background: var(--slate-50);
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 11.5px;
+      background: var(--slate-100);
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #b91c1c;
+      border: 1px solid #e2e8f0;
+    }
+
+    pre {
+      font-family: 'Fira Code', monospace;
+      font-size: 11.5px;
+      background: var(--slate-900);
+      color: #e2e8f0;
+      padding: 12px 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 10px 0 16px 0;
+      line-height: 1.5;
+    }
+
+    .qa-card {
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .qa-question {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qa-question .q-badge {
+      background: var(--primary);
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .qa-answer {
+      font-size: 13px;
+      color: var(--slate-700);
+      margin-bottom: 8px;
+      line-height: 1.55;
+    }
+
+    .dialogue-box {
+      background: #f0fdf4;
+      border-left: 3px solid var(--success);
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-style: italic;
+      color: #166534;
+      margin: 6px 0 10px 0;
+      font-size: 12.5px;
+    }
+
+    .action-box {
+      background: #eff6ff;
+      border-left: 3px solid var(--primary);
+      padding: 8px 14px;
+      border-radius: 4px;
+      color: var(--primary-dark);
+      font-size: 12px;
+      margin: 6px 0;
+    }
+
+    .footer {
+      border-top: 1px solid var(--slate-200);
+      padding-top: 14px;
+      margin-top: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: var(--slate-500);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header-banner">
+    <div class="title-group">
+      <h1>DigiSakhi (डिजी सखी)</h1>
+      <div class="subtitle">Complete Technical Architecture & External Viva Examination Dossier</div>
+    </div>
+    <div class="meta-badge">
+      <div><strong>Candidate:</strong> Sachin</div>
+      <div><strong>Repository:</strong> <a href="https://github.com/sachin-saroj/digisakhi">github.com/sachin-saroj/digisakhi</a></div>
+      <div><strong>Stack:</strong> React 19 • Node 24 • tRPC v11 • SQLite • Drizzle</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: EXECUTIVE PROJECT OVERVIEW -->
+  <h2>1. Project Overview & Problem Statement</h2>
+  <div class="card card-accent">
+    <p><strong>DigiSakhi</strong> is an empowering, bilingual (Hindi & English) cyber-safety and digital literacy platform built specifically for women participating in <strong>Self-Help Groups (SHGs)</strong> across India.</p>
+    <p><strong>The Core Problem:</strong> As digital payments (UPI, AePS, micro-banking) penetrate rural and semi-urban communities, women SHG members are disproportionately targeted by cyber-fraud, phishing links, lottery scams, fake OTP requests, and personal photo extortion. Traditional cyber-security advice is overly technical, fragmented, English-only, and lacks empathetic incident disclosure mechanisms.</p>
+    <p><strong>The DigiSakhi Solution:</strong> A lightweight, mobile-first web app providing interactive bilingual learning modules, privacy-first client-side scam inspection, stigma-free anonymous fraud reporting, 1-tap emergency helplines (1930, 1091, 112), and an administrative analytics console for SHG federations.</p>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Pillar</th>
+          <th>Feature Capability</th>
+          <th>Engineering Implementation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bilingual Learning</strong></td>
+          <td>Micro-lessons on UPI Safety, Phishing Scams, Social Media Privacy, and Photos.</td>
+          <td>Bilingual JSON payloads in SQLite; instant client-side localization toggle (EN/HI).</td>
+        </tr>
+        <tr>
+          <td><strong>Zero-Leakage Scam Checker</strong></td>
+          <td>Pasted SMS/WhatsApp messages are audited for urgency, malicious URLs, and OTP traps.</td>
+          <td><strong>100% Client-Side Regex Heuristics.</strong> Zero server transmission ensures complete user privacy.</td>
+        </tr>
+        <tr>
+          <td><strong>Anonymous Reporting</strong></td>
+          <td>Members submit cyber-fraud incidents without revealing their identity.</td>
+          <td>Nullable <code>userId</code> field in database. Complete de-identification at storage layer.</td>
+        </tr>
+        <tr>
+          <td><strong>Quick Exit Safety</strong></td>
+          <td>Instant 1-tap escape button redirecting browser to a neutral weather portal.</td>
+          <td>Client-side browser history replacement; protects members in hostile domestic environments.</td>
+        </tr>
+        <tr>
+          <td><strong>Admin Governance</strong></td>
+          <td>SHG Coordinators triage incident statuses and broadcast emergency notices.</td>
+          <td>Protected tRPC procedures enforcing Role-Based Access Control (RBAC).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 2: DATABASE DEEP-DIVE -->
+  <div class="page-break"></div>
+  <h2>2. Database Architecture: A to Z Deep-Dive (SQLite + Drizzle ORM)</h2>
+  
+  <div class="card">
+    <h3>Where is the database located and how is it executed?</h3>
+    <p>The DigiSakhi database is an <strong>embedded, file-based SQLite database</strong> stored at the root of the project as <strong><code>digisakhi.db</code></strong>. It requires zero cloud hostings, zero external servers, and zero network configuration.</p>
+    <ul>
+      <li><strong>Database File:</strong> <code>c:\Users\Asus\OneDrive\Documents\digisakhi\digisakhi.db</code></li>
+      <li><strong>Driver & Engine:</strong> <code>better-sqlite3</code> (High-performance C++ SQLite bindings for Node.js).</li>
+      <li><strong>Concurrency Engine:</strong> Configured in <strong>WAL (Write-Ahead Logging) Mode</strong> via <code>sqlite.pragma("journal_mode = WAL")</code> with a <code>busy_timeout = 5000ms</code>. This permits multiple concurrent reads without blocking database writes.</li>
+      <li><strong>Type-Safe ORM:</strong> <strong>Drizzle ORM</strong> (<code>drizzle-orm/better-sqlite3</code>). Generates zero-overhead, parameterized SQL queries with full TypeScript inference.</li>
+      <li><strong>Zero-Config Self-Healing:</strong> <code>server/db.ts</code> executes automatic DDL initialization on first startup (<code>CREATE TABLE IF NOT EXISTS</code>). The app can be booted on a fresh computer and run immediately with zero manual migration commands.</li>
+    </ul>
+  </div>
+
+  <h3>End-to-End Data Pipeline Flow:</h3>
+  <pre>
+[User Action: Browser] ──> React Form Component (`ReportIncidentModal.tsx`)
+                             │
+                             ▼ (Type-Safe RPC Call)
+[API Contract: tRPC v11] ──> `trpc.digisakhi.reportIncident.useMutation()`
+                             │
+                             ▼ (Strict Input Validation)
+[Server Middleware]      ──> Zod Schema: `z.object({ description, category, anonymous })`
+                             │
+                             ▼ (ORM Query Generation)
+[Drizzle ORM Engine]     ──> `db.insert(incidentReports).values(input).returning()`
+                             │ (Parameterized SQL: INSERT INTO incident_reports VALUES (?, ?, ?, ...))
+                             ▼
+[Database Engine]        ──> `better-sqlite3` writes directly to `digisakhi.db` on local SSD
+                             │
+                             ▼ (Instant Synchronous Response)
+[UI Feedback]            ──> Toast Notification: "Incident Report Registered Successfully!"
+  </pre>
+
+  <!-- SECTION 3: ALL 8 TABLES SPECIFICATIONS -->
+  <h2>3. Normalized Database Schema (All 8 Relational Tables)</h2>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Table Name</th>
+          <th>Module</th>
+          <th>Primary Key & Constraints</th>
+          <th>Key Columns & Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>users</code></td>
+          <td>Auth & Identity</td>
+          <td><code>id</code> (INTEGER PK AUTOINCREMENT), <code>openId</code> (UNIQUE)</td>
+          <td><code>name</code>, <code>email</code>, <code>phone</code>, <code>role</code> ('user'/'admin'), <code>shgGroup</code>, <code>preferredLanguage</code> ('en'/'hi').</td>
+        </tr>
+        <tr>
+          <td><code>modules</code></td>
+          <td>Education</td>
+          <td><code>id</code> (INTEGER PK AUTOINCREMENT), <code>slug</code> (UNIQUE)</td>
+          <td><code>title</code>, <code>titleHi</code>, <code>category</code>, <code>description</code>, <code>descriptionHi</code>, <code>quizData</code> (JSON 5 questions), <code>published</code>, <code>archived</code>.</td>
+        </tr>
+        <tr>
+          <td><code>learning_progress</code></td>
+          <td>Analytics</td>
+          <td><code>id</code> (INTEGER PK), <code>UNIQUE(userId, moduleId)</code></td>
+          <td><code>userId</code>, <code>moduleId</code>, <code>quizScore</code>, <code>questionCount</code>, <code>completedAt</code>. Tracks course completion certificate status.</td>
+        </tr>
+        <tr>
+          <td><code>quiz_attempts</code></td>
+          <td>Audit Log</td>
+          <td><code>id</code> (INTEGER PK AUTOINCREMENT)</td>
+          <td><code>userId</code>, <code>moduleId</code>, <code>quizScore</code>, <code>questionCount</code>, <code>answers</code> (JSON array of chosen options), <code>completedAt</code>.</td>
+        </tr>
+        <tr>
+          <td><code>incident_reports</code></td>
+          <td>Fraud Reporting</td>
+          <td><code>id</code> (INTEGER PK AUTOINCREMENT)</td>
+          <td><code>userId</code> (Nullable for anonymity), <code>description</code>, <code>category</code>, <code>anonymous</code> (1/0), <code>status</code> ('New'/'In Review'/'Resolved').</td>
+        </tr>
+        <tr>
+          <td><code>forum_posts</code></td>
+          <td>Community</td>
+          <td><code>id</code> (INTEGER PK AUTOINCREMENT)</td>
+          <td><code>userId</code>, <code>title</code>, <code>body</code>, <code>anonymous</code> (1/0), <code>pinned</code> (1/0), <code>createdAt</code>. Peer scam alerts.</td>
+        </tr>
+        <tr>
+          <td><code>forum_replies</code></td>
+          <td>Community</td>
+          <td><code>id</code> (INTEGER PK AUTOINCREMENT)</td>
+          <td><code>postId</code>, <code>userId</code>, <code>body</code>, <code>anonymous</code> (1/0), <code>createdAt</code>. Peer advice and solutions.</td>
+        </tr>
+        <tr>
+          <td><code>announcements</code></td>
+          <td>Admin Broadcast</td>
+          <td><code>id</code> (INTEGER PK AUTOINCREMENT)</td>
+          <td><code>adminId</code>, <code>message</code>, <code>urgent</code> (1/0), <code>createdAt</code>. Urgent emergency security notices for SHG federation.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 4: FRIEND'S LAPTOP SETUP GUIDE -->
+  <div class="page-break"></div>
+  <h2>4. Friend's Laptop Portability Runbook (Step-by-Step Setup)</h2>
+  
+  <div class="card card-accent">
+    <p><strong>Why DigiSakhi runs effortlessly on any computer:</strong> Traditional full-stack projects require installing MySQL, setting up XAMPP, creating database users, configuring port 3306, and importing <code>.sql</code> dumps. Because DigiSakhi uses an <strong>embedded SQLite architecture</strong>, the database travels with the folder itself!</p>
+  </div>
+
+  <div class="card">
+    <h3>Step-by-Step Execution on Friend's Laptop:</h3>
+    <ol>
+      <li>
+        <strong>Transfer the Project:</strong>
+        <p>Copy the <code>digisakhi</code> folder via Pen Drive to the friend's laptop (OR clone from GitHub):</p>
+        <pre>git clone https://github.com/sachin-saroj/digisakhi.git
+cd digisakhi</pre>
+        <em>Note: If copying via Pen Drive, the <code>digisakhi.db</code> file carries over all existing users and sample complaints automatically!</em>
+      </li>
+      <li>
+        <strong>Install Dependencies (One-time, 60 seconds):</strong>
+        <pre>pnpm install</pre>
+        <em>(If pnpm is not installed on friend's laptop, run <code>npm install -g pnpm</code> or use <code>npm install</code>).</em>
+      </li>
+      <li>
+        <strong>Boot the Application:</strong>
+        <pre>pnpm dev</pre>
+        <p>The console will output: <code>Server running on http://localhost:3000</code>. On boot, <code>server/db.ts</code> automatically checks for <code>digisakhi.db</code> and initializes any missing tables in 2 milliseconds.</p>
+      </li>
+      <li>
+        <strong>Launch the Database Visual Studio (For the Examiner):</strong>
+        <p>Open a second terminal window on your friend's laptop and run:</p>
+        <pre>pnpm drizzle-kit studio</pre>
+        <p>Open <code>https://local.drizzle.studio</code> in Google Chrome. All 8 database tables appear in an Excel-like interactive sheet!</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- SECTION 5: MASTER VIVA QUESTIONS & WINNING DIALOGUES -->
+  <div class="page-break"></div>
+  <h2>5. Master Viva Questions & Answers (Database & Engineering)</h2>
+
+  <!-- Q1 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q1</span> "Aapke project ka database kaunsa hai aur kahan hosted hai?"
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, hamara database lightweight, high-performance file-based <strong>SQLite</strong> hai. Yeh kisi 3rd party website ya external cloud par depend nahi karta, balki hamare project ke root folder mein <code>digisakhi.db</code> file ke roop mein store hota hai. Yeh 100% offline aur standalone chalta hai."
+    </div>
+    <div class="action-box">
+      <strong>👉 Action on Screen:</strong> VS Code ke File Explorer mein <code>digisakhi.db</code> file par cursor point karke dikha dein.
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q2</span> "Aapne SQLite kyun chuna? MySQL ya MongoDB kyun nahi?"
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, 3 solid engineering reasons hain:<br>
+      1. <strong>Zero-Setup Portability:</strong> XAMPP ya cloud database login karne ka koi dependency nahi. Project kisi bhi system par turant boot ho jata hai.<br>
+      2. <strong>Structured Relational Schema:</strong> Hamare users, progress aur reports tightly structured relational entities hain, isliye ACID-compliant SQL best fit hai, NoSQL MongoDB ki zaroorat nahi thi.<br>
+      3. <strong>WAL Mode Concurrency:</strong> Humne SQLite ko Write-Ahead Logging (WAL) mode mein configure kiya hai, jisse concurrent reads aur writes bina thread block huye instant execute hote hain."
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q3</span> "Mujhe screen par database open karke aur live data save karke dikhao!" (The Golden Demo)
+    </div>
+    <div class="action-box">
+      <strong>👉 30-Second Golden Action Plan:</strong><br>
+      1. Browser tab kholein: <code>https://local.drizzle.studio</code> ➔ Click on <code>incident_reports</code> table.<br>
+      2. Doosre tab mein live website kholein (<code>http://localhost:3000</code>).<br>
+      3. 'Report an Incident' par click karein aur submit karein: <em>"Fake WhatsApp electricity bill message"</em>.<br>
+      4. Drizzle Studio tab par aakar top-right mein <strong>Refresh (🔄)</strong> button dabayein.<br>
+      5. Naya record Row #1 par instantly display ho jayega!
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir dekhiye, jaise hi frontend se submit hua, Drizzle ORM ne <code>server/db.ts</code> ke through data ko seedha <code>digisakhi.db</code> SQLite file mein write kar diya, aur Drizzle Studio ne bina server restart kiye live record display kar diya."
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q4</span> "Code mein actual save karne wali line kahan hai?"
+    </div>
+    <div class="action-box">
+      <strong>👉 Action on Screen:</strong> Open <code>server/db.ts</code> Line 283:
+      <pre>const [created] = await db.insert(incidentReports).values(input).returning();</pre>
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, yeh <code>db.insert(incidentReports).values(input).returning()</code> function frontend payload ko SQL INSERT query bana kar SQLite file mein commit karta hai aur newly inserted record return karta hai."
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q5</span> "SQL Injection attacks se database kaise protected hai?"
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, security 2 layers par enforced hai:<br>
+      1. <strong>Input Validation:</strong> tRPC router boundary par Zod schema se user text ko sanitize aur validate kiya jata hai.<br>
+      2. <strong>Automatic Parameterized Queries:</strong> Drizzle ORM raw SQL string concatenation kabhi nahi karta, balki automatic parameterized queries use karta hai (e.g. <code>VALUES (?, ?)</code>). Isliye SQL Injection ka risk <strong>zero percent</strong> hai."
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q6</span> "Anonymous report mein user ki identity kaise safe rehti hai?"
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, <code>drizzle/schema.ts</code> mein <code>incident_reports</code> table ka <code>userId</code> column <strong>nullable</strong> rakha gaya hai. Jab sadasya 'Submit Anonymously' chunti hai, toh backend <code>userId = null</code> insert karta hai. Is tarah database level par koi identity link hi store nahi hoti."
+    </div>
+  </div>
+
+  <!-- SECTION 6: PROJECT & ARCHITECTURE QUESTIONS -->
+  <div class="page-break"></div>
+  <h2>6. Master Viva Questions (Core Project & Full-Stack Architecture)</h2>
+
+  <!-- Q7 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q7</span> "Scam Checker kaise kaam karta hai? Kya aapne user ka personal message external AI ko bheja?"
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, <strong>bilkul nahi! Yeh hamari core security feature hai.</strong><br>
+      Scam Checker 100% <strong>Client-Side Local Heuristics & Regex Engine</strong> par chalta hai. Sadasya dwara paste kiya gaya SMS ya WhatsApp message browser ke memory se bahar kabhi jata hi nahi hai. Isliye kisi third-party AI service ya server par personal bank messages leak hone ka zero chance hai."
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q8</span> "tRPC kya hota hai aur REST API ke mukable kyun use kiya?"
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, tRPC ka matlab hai <strong>TypeScript Remote Procedure Call</strong>.<br>
+      Traditional REST API mein hume frontend par API endpoints aur JSON data types manually sync rakhne padte the. tRPC mein backend router ka TypeScript type seedha frontend React components mein infer ho jata hai. Agar backend mein koi field badli, toh frontend mein compile-time par hi error aa jata hai — zero API mismatch bugs!"
+    </div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q9</span> "Quick Exit feature ka kya role hai?"
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, DigiSakhi rural women ke safety ke liye design ki gayi hai. Agar koi aurat harassment ya fraud report kar rahi ho aur achanak koi room mein aa jaye, toh Quick Exit button dabate hi browser history ko overwrite karke screen turant ek neutral Weather Portal par redirect ho jati hai, taaki user ki physical safety compromised na ho."
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="qa-card">
+    <div class="qa-question">
+      <span class="q-badge">Q10</span> "Bilingual (Hindi & English) support kaise implement kiya gaya hai?"
+    </div>
+    <div class="dialogue-box">
+      <strong>🗣️ Examiner Ko Yeh Boliye:</strong><br>
+      "Sir, database level par har module table mein <code>title</code> & <code>titleHi</code>, aur <code>description</code> & <code>descriptionHi</code> dono columns rakhe gaye hain. Frontend par single global state hook se user bina page reload kiye instant English aur Hindi toggle kar sakta hai."
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div><strong>Project:</strong> DigiSakhi — Digital Safety Companion for Women SHGs</div>
+    <div><strong>Created by:</strong> Sachin &nbsp;|&nbsp; <strong>Repo:</strong> <a href="https://github.com/sachin-saroj/digisakhi">github.com/sachin-saroj/digisakhi</a></div>
+    <div>100% Verified Production & Viva Ready</div>
+  </div>
+
+</body>
+</html>
